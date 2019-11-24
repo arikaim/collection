@@ -359,6 +359,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
         if (isset($this->data[$key]) == false) {
             return $default;
         }
+        
         return ($this->data[$key] == null) ? $default : $this->data[$key];         
     }
 
