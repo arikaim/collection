@@ -11,6 +11,7 @@ namespace Arikaim\Core\Collection;
 
 use Arikaim\Core\Collection\Collection;
 use Arikaim\Core\Collection\Property;
+use Arikaim\Core\Collection\Interfaces\PropertyInterface;
 
 /**
  * Properties collection
@@ -18,27 +19,13 @@ use Arikaim\Core\Collection\Property;
 class Properties extends Collection
 { 
     /**
-     * Properties array
-     *
-     * @var array
-     */
-    private $properties;
-
-    /**
      * Constructor
      * 
-     * @param boolean $resolveProperties
      * @param array $data
      */
-    public function __construct($data = [], $resolveProperties = true) 
+    public function __construct($data = []) 
     {
-        $this->properties = [];
-
-        if ($resolveProperties == true) {
-            $this->createProperties($data);
-        } else {
-            parent::__construct($data);
-        }
+        parent::__construct($data);
     }
 
     /**
@@ -51,13 +38,13 @@ class Properties extends Collection
     public function property($name, $descriptor)
     {
         if (is_array($descriptor) == true) {
-            $this->data[$name] = Property::create($descriptor);
+            $property = Property::create($descriptor);
         }
         if (is_object($descriptor) == true) {
-            $this->data[$name] = $descriptor;
+            $property = $descriptor;
         }
         if (is_string($descriptor) == true) {
-            $this->data[$name] = Property::createFromText($descriptor);
+            $property = Property::createFromText($descriptor);
         }
         if (is_callable($descriptor) == true) {
             $property = new Property($name);
@@ -65,9 +52,19 @@ class Properties extends Collection
                 $descriptor($property);
                 return $property;
             };
-            $this->data[$name] = $callback();
+            $property = $callback();
         }
 
+        $group = $property->getGroup();
+        if ($property->isGroup() == true) {
+            $this->add('groups',$property->getValue());
+        }
+        if (empty($group) == false) {
+            $this->data[$group][$name] = $property->toArray();
+        } else {
+            $this->data[$name] = $property->toArray();
+        }
+        
         return $this;
     }
 
@@ -93,30 +90,37 @@ class Properties extends Collection
     }
 
     /**
-     * Convert to array
-     *
-     * @return array
-     */
-    public function toArray()
-    {       
-        $callback = function($value, $key) {
-            $property =  $this->getProperty($key);
-            $this->properties[$key] = $property->toArray();           
-        };
-        array_walk_recursive($this->data ,$callback);
-
-        return $this->properties;
-    }
-
-    /**
      * Get property value
      *
      * @param string $key
      * @return mixed
      */
-    public function getValue($key)
+    public function getValue($key, $group = null)
     {
-        return $this->getProperty($key)->getValue();       
+        if ($this->has($key) == false) {
+            return null;
+        }
+        $property = (empty($group) == true) ? $this->get($key) : $this->data[$group][$key];
+
+        return (empty($property['value']) == true) ? $property['default'] : $property['value'];
+    }
+
+    /**
+     * Get groups
+     *
+     * @return array
+     */
+    public function getGroups() 
+    {
+        foreach ($this->data as $key => $property) {
+            if (isset($property['type']) == true) {
+                if ($property['type'] == Property::GROUP) {
+                    $result[] = $property;
+                }              
+            }
+        }    
+
+        return $result;
     }
 
     /**
@@ -126,30 +130,46 @@ class Properties extends Collection
      * @param boolean|null $hidden
      * @return array
      */
-    public function gePropertiesList($editable = null, $hidden = null)
+    public function gePropertiesList($editable = null, $hidden = null, $group = null)
     {
         $result = [];
-        foreach ($this->data as $key => $value) {
-            $property = $this->getProperty($key);
+        $data = (empty($group) == false) ? $this->data[$group] : $this->data;
+        $groups = $this->get('groups',[]);
 
+        foreach ($data as $key => $property) {
+            if (in_array($key,$groups) === true && empty($groups) == false) {               
+                continue;
+            }
+            if ($key == 'groups') {
+                continue;
+            }
+            if ($property['type'] == Property::GROUP) {              
+                continue;
+            }
+
+            $property['value'] = (empty($property['value']) == true) ? $property['default'] : $property['value'];
+
+            $itemGroup = $property['group'];
+          
+            if (empty($itemGroup) == false && $itemGroup != $group) {             
+                continue;
+            }
             if ($editable == true) {
-                if ($property->isReadonly() == false && $property->isHidden() == false) {
-                    $result[$key] = $property;
+                if ($property['readonly'] == false && $property['hidden'] == false) {
+                    $result[] = $property;
                 }  
                
             }                
             if ($editable == false) {
-                if ($property->isReadonly() == true || $property->isHidden() == true) {
-                    $result[$key] = $property;
+                if ($property['readonly'] == true || $property['hidden'] == true) {
+                    $result[] = $property;
                 }                 
             }
 
             if (empty($hidden) == false) {
-                if ($property->isHidden() == $hidden) {
-                    $result[$key] = $property;
-                } else {
-                    unset($result[$key]);
-                }
+                if ($property['hidden'] == $hidden) {
+                    $result[] = $property;
+                } 
             }
         }    
 
@@ -164,8 +184,25 @@ class Properties extends Collection
     public function getValues()
     {
         $result = [];
-        foreach ($this->data as $key => $value) {
-            $result[$key] = $this->getProperty($key)->getValue();          
+        $groups = $this->get('groups',[]);
+
+        foreach ($this->data as $key => $property) {
+            if ($key == 'groups') {
+                continue; 
+            }
+            if (in_array($key,$groups) === true) {   
+                foreach ($property as $name => $item) {
+                    $value = (empty($item['value']) == true) ? $item['default'] : $item['value'];
+                    $result[$key][$name] = $value;
+                }
+                continue;                           
+            } 
+            if ($property['type'] == Property::GROUP) {
+                continue;
+            }
+
+            $value = (empty($property['value']) == true) ? $property['default'] : $property['value'];
+            $result[$key] = $value;         
         }    
 
         return $result;
@@ -179,25 +216,16 @@ class Properties extends Collection
      */
     public function setPropertyValues(array $data)
     {
-        foreach ($data as $key => $value) {
-            $this->getProperty($key)->value($value);
-        }
-    }
+        $groups = $this->get('groups',[]);
 
-    /**
-     * Replaces data array with properties array for every item in data array.
-     *
-     * @param array $data
-     * @return boolean
-     */
-    private function createProperties(array $data)
-    {
-        $this->data = [];      
-        $callback = function($value, $key) {
-            $property = new Property($key);
-            $this->data[$key] = $property;
-        };
-        
-        return array_walk_recursive($data,$callback);       
+        foreach ($data as $key => $value) {
+            if (in_array($key,$groups) === true) {
+                foreach ($value as $name => $item) {
+                    $this->data[$key][$name]['value'] = $item;
+                }
+            } else {
+                $this->data[$key]['value'] = $value;        
+            }    
+        }
     }
 }

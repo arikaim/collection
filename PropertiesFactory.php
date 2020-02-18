@@ -25,13 +25,7 @@ class PropertiesFactory
      */
     public static function createFromArray(array $data)
     {
-        $result = [];
-        foreach ($data as $key => $value) {
-            $property = (is_array($value) == true) ? Property::create($value) : new Property($key,$value);           
-            $result[$key] = $property;
-        }    
-
-        return new Properties($result,false);   
+        return new Properties($data);   
     }
 
     /**

@@ -285,6 +285,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
             array_push($this->data[$key],$value);  
             $this->data[$key] = array_unique($this->data[$key],SORT_REGULAR);
         }
+        
         return true;
     }
 
@@ -471,5 +472,15 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
             }
         }
         return true;
+    }
+
+    /**
+     * Get collection items
+     *
+     * @return array
+     */
+    public function getItems()
+    {
+        return $this->data;
     }
 }

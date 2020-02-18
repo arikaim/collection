@@ -296,6 +296,7 @@ class FeedCollection extends Collection implements CollectionInterface, FeedsInt
         } else {
             $items = (isset($this->data[$this->itemsKey]) == true) ? $this->data[$this->itemsKey] : null;
         }
+        
         return $items;
     } 
 

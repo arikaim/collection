@@ -18,12 +18,14 @@ class Property implements PropertyInterface
 {
     const TEXT      = 0;
     const NUMBER    = 1;
+    const CUSTOM    = 2;
     const BOOLEAN   = 3;
     const LIST      = 4;
     const PHP_CLASS = 5;
     const PASSWORD  = 6;
     const URL       = 7;
     const TEXT_AREA = 8;
+    const GROUP     = 9;
 
     /**
      * Property type text names
@@ -33,12 +35,14 @@ class Property implements PropertyInterface
     private $typeNames = [
         'text',
         'number',
+        'custom',
         'boolean',
         'list',
         'class',
         'password',
         'url',
-        'text-area'
+        'text-area',
+        'group'
     ];
 
     /**
@@ -54,6 +58,20 @@ class Property implements PropertyInterface
      * @var mixed
      */
     protected $value;
+
+    /**
+     * Dropdown items
+     *
+     * @var array
+     */
+    protected $items;
+
+    /**
+     * Group name
+     *
+     * @var string|null
+     */
+    protected $group;
 
     /**
      * Default value
@@ -122,8 +140,9 @@ class Property implements PropertyInterface
      * @param string|null $description
      * @param boolean $required
      * @param string|null $help
+     * @param array|null $items
      */
-    public function __construct($name = null, $value = null, $default = null, $type = Self::TEXT, $title = null, $description = null, $required = false, $help = null) 
+    public function __construct($name = null, $value = null, $default = null, $type = Self::TEXT, $title = null, $description = null, $required = false, $help = null, $items = null, $group = null) 
     {
         $this->name = $name;
         $this->value = $value;
@@ -133,6 +152,9 @@ class Property implements PropertyInterface
         $this->description = $description;
         $this->required = $required;
         $this->help = $help;
+        $this->items = (empty($items) == true) ? [] : $items;
+        $this->group = $group;
+
     }
 
     /**
@@ -143,6 +165,16 @@ class Property implements PropertyInterface
     public function isReadonly()
     {
         return (empty($this->readonly) == true) ? false : $this->readonly;
+    }
+
+    /**
+     * Return true if property is group
+     *
+     * @return boolean
+    */
+    public function isGroup()
+    {
+        return ($this->type == Self::GROUP);
     }
 
     /**
@@ -164,6 +196,18 @@ class Property implements PropertyInterface
     public function value($value)
     {
         $this->value = $value;
+        return $this;
+    }
+
+    /**
+     * Set property items
+     *
+     * @param array $items
+     * @return Property
+    */
+    public function items($items)
+    {
+        $this->items = $items;
         return $this;
     }
 
@@ -276,6 +320,18 @@ class Property implements PropertyInterface
     }
 
     /**
+     * Set property group
+     *
+     * @param string $name
+     * @return Property
+     */
+    public function group($name)
+    {
+        $this->group = $name;
+        return $this;
+    }
+
+    /**
      * Get type id
      *
      * @param string $type
@@ -298,6 +354,16 @@ class Property implements PropertyInterface
     }
 
     /**
+     * Return property items.
+     *
+     * @return array
+     */
+    public function getItems()
+    {
+        return $this->items;
+    }
+
+    /**
      * Return property required attribute.
      *
      * @return boolean
@@ -305,6 +371,16 @@ class Property implements PropertyInterface
     public function getRequired()
     {
         return (empty($this->required) == true) ? false : $this->required;
+    }
+
+    /**
+     * Return property group.
+     *
+     * @return string|null
+     */
+    public function getGroup()
+    {
+        return $this->group;
     }
 
     /**
@@ -386,16 +462,18 @@ class Property implements PropertyInterface
     public function toArray()
     {
         return [
-            'name' => $this->getName(),
-            'value' => $this->value,
-            'title' => $this->getTitle(),
+            'name'        => $this->getName(),
+            'value'       => $this->getValue(),
+            'title'       => $this->getTitle(),
             'description' => $this->description,
-            'default' => $this->default,
-            'type' => $this->type,
-            'required' => $this->required,
-            'readonly' => $this->isReadonly(),
-            'hidden' => $this->isHidden(),
-            'help' => $this->help,
+            'default'     => $this->getDefault(),
+            'type'        => $this->getType(),
+            'required'    => $this->required,
+            'readonly'    => $this->isReadonly(),
+            'hidden'      => $this->isHidden(),
+            'items'       => $this->getItems(),
+            'group'       => $this->group,
+            'help'        => $this->help
         ];
     }
     
@@ -435,8 +513,10 @@ class Property implements PropertyInterface
         $help = (isset($data['help']) == true) ? $data['help'] : null;
         $readonly = (isset($data['readonly']) == true) ? $data['readonly'] : false;
         $hidden = (isset($data['hidden']) == true) ? $data['hidden'] : false;
+        $items = (isset($data['items']) == true) ? $data['items'] : null;
+        $group = (isset($data['group']) == true) ? $data['group'] : null;
 
-        $property = new Self($name,$value,$default,$type,$title,$description,$required,$help);
+        $property = new Self($name,$value,$default,$type,$title,$description,$required,$help,$items,$group);
         
         return $property->readonly($readonly)->hidden($hidden);
     }
