@@ -114,6 +114,7 @@ class FeedCollection extends Collection implements CollectionInterface, FeedsInt
     public function pageKey($key)
     {
         $this->pageKey = $key;
+        
         return $this;
     }
 
@@ -136,6 +137,7 @@ class FeedCollection extends Collection implements CollectionInterface, FeedsInt
     public function perPageKey($key)
     {
         $this->perPageKey = $key;
+
         return $this;
     }
 
@@ -148,6 +150,7 @@ class FeedCollection extends Collection implements CollectionInterface, FeedsInt
     public function baseUrl($url)
     {
         $this->baseUrl = $url;
+
         return $this;
     }
 
@@ -160,6 +163,7 @@ class FeedCollection extends Collection implements CollectionInterface, FeedsInt
     public function params($params)
     {
         $this->params = $params;
+
         return $this;
     }
 
@@ -172,6 +176,7 @@ class FeedCollection extends Collection implements CollectionInterface, FeedsInt
     public function itemsKey($key)
     {
         $this->itemsKey = $key;
+
         return $this;
     }
 
@@ -186,7 +191,9 @@ class FeedCollection extends Collection implements CollectionInterface, FeedsInt
         $this->setPerPage($perPage);
 
         $url = $this->getUrl();
+
         $json = Curl::get($url);
+    
         $data = json_decode($json,true);
         if (is_array($data) == true) {
             $this->data = $data;
@@ -239,6 +246,7 @@ class FeedCollection extends Collection implements CollectionInterface, FeedsInt
                 }
             }           
         }     
+
         return $this->baseUrl . $queryString;
     }
 
@@ -281,6 +289,7 @@ class FeedCollection extends Collection implements CollectionInterface, FeedsInt
     public function getItems($keyMaps = true)
     {
         $items = $this->getItemsArray();
+
         return ($keyMaps == true) ? $this->applyKeyMaps($items) : $items;
     }
 
@@ -336,6 +345,7 @@ class FeedCollection extends Collection implements CollectionInterface, FeedsInt
     public function mapKey($key, $mapTo)
     {
         $this->keyMaps[$key] = $mapTo;
+
         return $this;
     }
 
@@ -352,6 +362,7 @@ class FeedCollection extends Collection implements CollectionInterface, FeedsInt
         foreach ($items as $key => $item) {                    
             $items[$key] = $this->transformItem($item);                       
         }
+
         return $items;
     }
 
