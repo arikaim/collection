@@ -112,6 +112,7 @@ class Properties extends Collection
      */
     public function getGroups() 
     {
+        $result = [];
         foreach ($this->data as $key => $property) {
             if (isset($property['type']) == true) {
                 if ($property['type'] == Property::GROUP) {
