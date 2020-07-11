@@ -178,7 +178,7 @@ class Arrays
     /**
      * Convert text to array
      *
-     * @param string$text
+     * @param string $text
      * @param string $separator
      * @return array
      */
