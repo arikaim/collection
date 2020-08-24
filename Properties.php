@@ -12,11 +12,12 @@ namespace Arikaim\Core\Collection;
 use Arikaim\Core\Collection\Collection;
 use Arikaim\Core\Collection\Property;
 use Arikaim\Core\Collection\Interfaces\PropertyInterface;
+use Arikaim\Core\Collection\Interfaces\CollectionInterface;
 
 /**
  * Properties collection
  */
-class Properties extends Collection
+class Properties extends Collection implements CollectionInterface
 { 
     /**
      * Constructor
@@ -37,16 +38,16 @@ class Properties extends Collection
      */
     public function property($name, $descriptor)
     {
-        if (is_array($descriptor) == true) {
+        if (\is_array($descriptor) == true) {
             $property = Property::create($descriptor);
         }
-        if (is_object($descriptor) == true) {
+        if (\is_object($descriptor) == true) {
             $property = $descriptor;
         }
-        if (is_string($descriptor) == true) {
+        if (\is_string($descriptor) == true) {
             $property = Property::createFromText($descriptor);
         }
-        if (is_callable($descriptor) == true) {
+        if (\is_callable($descriptor) == true) {
             $property = new Property($name);
             $callback = function() use($property,$descriptor) {
                 $descriptor($property);
@@ -138,7 +139,7 @@ class Properties extends Collection
         $groups = $this->get('groups',[]);
 
         foreach ($data as $key => $property) {
-            if (in_array($key,$groups) === true && empty($groups) == false) {               
+            if (\in_array($key,$groups) === true && empty($groups) == false) {               
                 continue;
             }
             if ($key == 'groups') {
@@ -191,7 +192,7 @@ class Properties extends Collection
             if ($key == 'groups') {
                 continue; 
             }
-            if (in_array($key,$groups) === true) {   
+            if (\in_array($key,$groups) === true) {   
                 foreach ($property as $name => $item) {
                     $value = (empty($item['value']) == true) ? $item['default'] : $item['value'];
                     $result[$key][$name] = $value;
@@ -220,7 +221,7 @@ class Properties extends Collection
         $groups = $this->get('groups',[]);
 
         foreach ($data as $key => $value) {
-            if (in_array($key,$groups) === true) {
+            if (\in_array($key,$groups) === true) {
                 foreach ($value as $name => $item) {
                     $this->data[$key][$name]['value'] = $item;
                 }

@@ -38,7 +38,7 @@ class PropertiesFactory
     public static function createFromFile($fileName, $resolveProperties = true)
     {
         $data = File::readJsonFile($fileName);
-        $data = (is_array($data) == true) ? $data : [];
+        $data = (\is_array($data) == true) ? $data : [];
 
         return ($resolveProperties == true) ? new Properties($data) : Self::createFromArray($data);       
     }

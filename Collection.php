@@ -58,7 +58,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
     {      
         $data = File::readJsonFile($fileName,$vars);
        
-        $data = (is_array($data) == true) ? $data : [];
+        $data = (\is_array($data) == true) ? $data : [];
         $data = (isset($data[$root]) == true) ? $data[$root] : $data;
         
         return new Self($data);
@@ -116,7 +116,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      */
     public function replace(array $replacement)
     {
-        $this->data = array_replace($this->data,$replacement);
+        $this->data = \array_replace($this->data,$replacement);
         return $this;
     }
 
@@ -185,10 +185,10 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      */
     public function setBooleanValue($path, $value)
     {
-        if (is_numeric($value) == true) {
-            $value = (intval($value) > 0) ? true : false;
+        if (\is_numeric($value) == true) {
+            $value = (\intval($value) > 0) ? true : false;
         }
-        if (is_string($value) == true) {
+        if (\is_string($value) == true) {
             $value = ($value === "true") ? true : false;
         }
         $this->setValue($path,$value);
@@ -219,7 +219,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
         if (isset($this->data[$key]) == false) {
             $this->data[$key] = [];
         }       
-        $this->data[$key] = ($recursive == false) ? array_merge($this->data[$key],$data) : array_merge_recursive($this->data[$key],$data);
+        $this->data[$key] = ($recursive == false) ? \array_merge($this->data[$key],$data) : \array_merge_recursive($this->data[$key],$data);
     }
 
     /**
@@ -231,7 +231,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      */
     public function mergeItems(array $data, $recursive = false)
     {            
-        $this->data = ($recursive == false) ? array_merge($this->data,$data) : array_merge_recursive($this->data,$data);
+        $this->data = ($recursive == false) ? \array_merge($this->data,$data) : \array_merge_recursive($this->data,$data);
     }
 
     /**
@@ -259,8 +259,8 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
         if (isset($this->data[$key]) == false) {
             $this->data[$key] = [];
         }       
-        array_push($this->data[$key],$value);
-        $this->data[$key] = array_values(array_unique($this->data[$key]));
+        \array_push($this->data[$key],$value);
+        $this->data[$key] = \array_values(\array_unique($this->data[$key]));
     }
     
     /**
@@ -277,14 +277,14 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
             if (isset($this->data[$key][$subKey]) == false) {
                 $this->data[$key][$subKey] = [];
             } 
-            array_push($this->data[$key][$subKey],$value);  
-            $this->data[$key][$subKey] = array_unique($this->data[$key][$subKey],SORT_REGULAR);
+            \array_push($this->data[$key][$subKey],$value);  
+            $this->data[$key][$subKey] = \array_unique($this->data[$key][$subKey],SORT_REGULAR);
         } else {
             if (isset($this->data[$key]) == false) {
                 $this->data[$key] = [];
             }    
-            array_push($this->data[$key],$value);  
-            $this->data[$key] = array_unique($this->data[$key],SORT_REGULAR);
+            \array_push($this->data[$key],$value);  
+            $this->data[$key] = \array_unique($this->data[$key],SORT_REGULAR);
         }
         
         return true;
@@ -304,14 +304,14 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
             if (isset($this->data[$key][$subKey]) == false) {
                 $this->data[$key][$subKey] = [];
             } 
-            array_unshift($this->data[$key][$subKey],$value);  
-            $this->data[$key][$subKey] = array_unique($this->data[$key][$subKey],SORT_REGULAR);
+            \array_unshift($this->data[$key][$subKey],$value);  
+            $this->data[$key][$subKey] = \array_unique($this->data[$key][$subKey],SORT_REGULAR);
         } else {
             if (isset($this->data[$key]) == false) {
                 $this->data[$key] = [];
             }    
-            array_unshift($this->data[$key],$value);  
-            $this->data[$key] = array_unique($this->data[$key],SORT_REGULAR);
+            \array_unshift($this->data[$key],$value);  
+            $this->data[$key] = \array_unique($this->data[$key],SORT_REGULAR);
         }
         return true;
     }
@@ -346,7 +346,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      */
     public function toArray()
     {
-        return is_array($this->data) ? $this->data : [];
+        return \is_array($this->data) ? $this->data : [];
     }
 
     /**
@@ -397,7 +397,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
     public function getArray($key, $default = null)
     {
         $result = $this->get($key,$default);
-        return (is_array($result) == false) ? [] : $result;
+        return (\is_array($result) == false) ? [] : $result;
     }
 
     /**
@@ -443,7 +443,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
     }
 
     /**
-     * Gte value by path
+     * Get value by path
      *
      * @param string $path
      * @param mixed $default
@@ -465,9 +465,9 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
     public function addField($path, $value)
     {
         foreach ($this->data as $key => $item) {
-            if (is_array($item) == true) {
-                $current_value = Arrays::getValue($item,$path);
-                if ($current_value === null) {
+            if (\is_array($item) == true) {
+                $currentValue = Arrays::getValue($item,$path);
+                if ($currentValue === null) {
                     $this->data[$key] = Arrays::setValue($item,$path,$value);
                 }
             }

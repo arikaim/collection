@@ -42,4 +42,31 @@ interface CollectionInterface
      * @return array
      */
     public function toArray();
+
+    /**
+     * Get value from collection
+     *
+     * @param string $key Name
+     * @param mixed $default If key not exists return default value
+     * @return mixed
+     */
+    public function get($key, $default = null);
+
+    /**
+     * Get value by path
+     *
+     * @param string $path
+     * @param mixed $default
+     * @return mixed
+     */
+    public function getByPath($path, $default = null);
+
+    /**
+     * Set item value in collection
+     *
+     * @param string $key Key Name
+     * @param mixed $value Value
+     * @return Collection
+     */
+    public function set($key, $value);
 }

@@ -21,7 +21,7 @@ class Arrays
      * @return array
      */
     public static function unique($array) {
-        return array_keys(array_flip($array));
+        return \array_keys(\array_flip($array));
     } 
 
     /**
@@ -38,11 +38,12 @@ class Arrays
         if (!$path) {
             return null;
         }   
-        $segments = is_array($path) ? $path : explode($separator,$path);
+        $segments = \is_array($path) ? $path : \explode($separator,$path);
         $current = &$array;
+
         foreach ($segments as $segment) {
-            if (!isset($current[$segment])) {
-                $current[$segment] = array();
+            if (isset($current[$segment]) == false) {
+                $current[$segment] = [];
             }
             $current = &$current[$segment];
         }
@@ -59,11 +60,11 @@ class Arrays
      */
     public static function isAssociative(array $array)
     {
-        if (array() === $array) {
+        if ([] === $array) {
             return false;
         }
 
-        return (array_keys($array) !== range(0, count($array) - 1));
+        return (\array_keys($array) !== \range(0,\count($array) - 1));
     }
 
     /**
@@ -92,7 +93,8 @@ class Arrays
         if (empty($path) == true) {
             return null;
         }
-        $pathParts = is_array($path) ? $path : explode($separator, $path);
+
+        $pathParts = \is_array($path) ? $path : \explode($separator, $path);
         $reference = &$array;
         foreach ($pathParts as $key) {           
             $reference = &$reference[$key];
@@ -110,11 +112,12 @@ class Arrays
      */
     public static function getValues($array, $keySearch)
     {
-        if (is_array($array) == false) return null;
-        $len = strlen($keySearch);
+        if (\is_array($array) == false) return null;
+        $len = \strlen($keySearch);
         $result = [];
+
         foreach ($array as $key => $value) {
-            if (substr($key,0,$len) == $keySearch) {
+            if (\substr($key,0,$len) == $keySearch) {
                 $result[$key] = $value;
             }
         }
@@ -134,20 +137,21 @@ class Arrays
     public static function merge($array1, $array2, $prevKey = "", $fullKey = "") 
     {
         $result = $array1;
-        if (is_array($array2) == false) {
+        if (\is_array($array2) == false) {
             return $result;
         }
+
         foreach ($array2 as $key => &$value) {
             if ($fullKey != "") { 
                 $fullKey .= "/"; 
             }
             $fullKey .= $key;
-            if (is_array($value) && isset($result[$key]) && is_array($result[$key])) {     
+            if (\is_array($value) && isset($result[$key]) && \is_array($result[$key])) {     
                 $result[$key] = Self::merge($result[$key],$value,$key,$fullKey);
             } else {
-                $fullKey = str_replace("0/","",$fullKey);
+                $fullKey = \str_replace("0/","",$fullKey);
                 $result[$key] = $value;               
-                $fullKey = str_replace("/$prevKey/$key","",$fullKey);
+                $fullKey = \str_replace("/$prevKey/$key","",$fullKey);
             }
         }
 
@@ -167,9 +171,9 @@ class Arrays
             for ($i = 0; $i < count($array); $i++) { 
                 $path .= $array[$i] . DIRECTORY_SEPARATOR;
             }
-            $result = rtrim($path,DIRECTORY_SEPARATOR);
+            $result = \rtrim($path,DIRECTORY_SEPARATOR);
         } else {
-            $result = end($array);
+            $result = \end($array);
         }
 
         return $result;
@@ -184,12 +188,13 @@ class Arrays
      */
     public static function toArray($text, $separator = null) 
     {
-        if (is_array($text) == true) {
+        if (\is_array($text) == true) {
             return $text;
         }
+
         $separator = (empty($separator) == true) ? PHP_EOL : $separator;   
 
-        return explode($separator,trim($text));       
+        return \explode($separator,\trim($text));       
     }
 
     /**
@@ -205,7 +210,7 @@ class Arrays
         }
         $separator = (empty($separator) == true) ? PHP_EOL : $separator; 
 
-        return implode($separator, $array);
+        return \implode($separator, $array);
     }
 
     /**
@@ -216,7 +221,7 @@ class Arrays
      */
     public static function convertToArray($object) 
     {
-        $reflection = new \ReflectionClass(get_class($object));
+        $reflection = new \ReflectionClass(\get_class($object));
         $result = [];
         foreach ($reflection->getProperties() as $property) {
             $property->setAccessible(true);
@@ -236,11 +241,12 @@ class Arrays
      */
     public static function haveSubItems($array)
     {
-        if (is_array($array) == false) {
+        if (\is_array($array) == false) {
             return false;
         }
+
         foreach ($array as $key => $value) {        
-            if (is_array($array[$key]) == true) {               
+            if (\is_array($array[$key]) == true) {               
                 return true;
             }
         }
@@ -273,10 +279,10 @@ class Arrays
      * @return array
      */
     public static function sliceByKeys(array $array, $keys = null) {
-        $keys = (empty($keys) == true) ? array_keys($array) : $keys;
-        $keys = (is_array($keys) == false) ? [$keys] : $keys;
+        $keys = (empty($keys) == true) ? \array_keys($array) : $keys;
+        $keys = (\is_array($keys) == false) ? [$keys] : $keys;
     
-        return array_intersect_key($array, array_fill_keys($keys, '1'));    
+        return \array_intersect_key($array,\array_fill_keys($keys, '1'));    
     }
 
     /**
@@ -287,7 +293,7 @@ class Arrays
      */
     public static function removeEmpty(array $array)
     {
-        return array_filter($array,function($value) {
+        return \array_filter($array,function($value) {
             return !empty($value) || $value === 0;
         }); 
     }
@@ -301,9 +307,9 @@ class Arrays
      */
     public static function arrayColumns(array $data, array $keys)
     {    
-        $keys = array_flip($keys);
-        $filtered = array_map(function($item) use($keys) {
-            return array_intersect_key($item,$keys);
+        $keys = \array_flip($keys);
+        $filtered = \array_map(function($item) use($keys) {
+            return \array_intersect_key($item,$keys);
         },$data);
 
         return $filtered;

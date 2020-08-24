@@ -154,7 +154,6 @@ class Property implements PropertyInterface
         $this->help = $help;
         $this->items = (empty($items) == true) ? [] : $items;
         $this->group = $group;
-
     }
 
     /**
@@ -219,7 +218,7 @@ class Property implements PropertyInterface
     */
     public function type($type)
     {
-        $this->type = (is_string($type) == true) ? $this->getTypeId($type) : $type;
+        $this->type = (\is_string($type) == true) ? $this->getTypeId($type) : $type;
         return $this;
     }
 
@@ -339,7 +338,7 @@ class Property implements PropertyInterface
      */
     public function getTypeId($type)
     {
-        $key = array_search($type,$this->typeNames);       
+        $key = \array_search($type,$this->typeNames);       
         return ($key !== false) ? $key : null;
     }
 
@@ -390,7 +389,7 @@ class Property implements PropertyInterface
      */
     public function getValue()
     {
-        return (is_null($this->value) == true) ? $this->getDefault() : $this->value;
+        return (\is_null($this->value) == true) ? $this->getDefault() : $this->value;
     }
 
     /**
@@ -486,9 +485,9 @@ class Property implements PropertyInterface
     public static function createFromText($text)
     {
         $result = [];
-        $tokens = explode('|',$text);
+        $tokens = \explode('|',$text);
         foreach ($tokens as $param) {
-            $token = explode('=',$param);
+            $token = \explode('=',$param);
             $result[$token[0]] = $token[1];
         }
         

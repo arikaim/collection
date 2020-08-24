@@ -194,8 +194,8 @@ class FeedCollection extends Collection implements CollectionInterface, FeedsInt
 
         $json = Curl::get($url);
     
-        $data = json_decode($json,true);
-        if (is_array($data) == true) {
+        $data = \json_decode($json,true);
+        if (\is_array($data) == true) {
             $this->data = $data;
         }      
 
@@ -235,11 +235,11 @@ class FeedCollection extends Collection implements CollectionInterface, FeedsInt
      */
     public function getUrl()
     {
-        $queryString = (is_string($this->params) == true) ? $this->params : '';
+        $queryString = (\is_string($this->params) == true) ? $this->params : '';
 
-        if (is_array($this->params) == true) {
+        if (\is_array($this->params) == true) {
             if (Arrays::isAssociative($this->params) == true) {
-                $queryString = "?" . http_build_query($this->params);
+                $queryString = "?" . \http_build_query($this->params);
             } else {              
                 foreach ($this->params as $value) {
                     $queryString .= $value . "/";
@@ -375,7 +375,7 @@ class FeedCollection extends Collection implements CollectionInterface, FeedsInt
     protected function transformItem($item)
     {
         foreach ($this->keyMaps as $key => $value) {
-            if (is_callable($value) == true) {          
+            if (\is_callable($value) == true) {          
                 $callback = function() use($value,$item) {
                     return $value($item);
                 };        
