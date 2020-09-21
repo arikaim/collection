@@ -15,6 +15,26 @@ namespace Arikaim\Core\Collection;
 class Arrays 
 {
     /**
+     * Recursive array count
+     *
+     * @param array $array
+     * @return integer
+     */
+    public static function recursiveCount($array) 
+    {
+        if (\is_array($array) == false) {
+            return 1;
+        }
+
+        $count = 0;
+        foreach($array as $item) {
+            $count += Self::recursiveCount($item);
+        }
+
+        return $count;
+    }
+
+    /**
      * Return array with unique values 
      *
      * @param array $array
