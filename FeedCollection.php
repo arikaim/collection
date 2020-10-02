@@ -239,10 +239,10 @@ class FeedCollection extends Collection implements CollectionInterface, FeedsInt
 
         if (\is_array($this->params) == true) {
             if (Arrays::isAssociative($this->params) == true) {
-                $queryString = "?" . \http_build_query($this->params);
+                $queryString = '?' . \http_build_query($this->params);
             } else {              
                 foreach ($this->params as $value) {
-                    $queryString .= $value . "/";
+                    $queryString .= $value . '/';
                 }
             }           
         }     

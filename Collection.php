@@ -189,7 +189,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
             $value = (\intval($value) > 0) ? true : false;
         }
         if (\is_string($value) == true) {
-            $value = ($value === "true") ? true : false;
+            $value = ($value === 'true') ? true : false;
         }
         $this->setValue($path,$value);
     }

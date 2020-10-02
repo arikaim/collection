@@ -35,12 +35,68 @@ class Arrays
     }
 
     /**
+     * Append values from append array to array 
+     *
+     * @param array $array
+     * @param array $append
+     * @return array
+     */
+    public static function arrayAppend(array $array, array $append)
+    {
+        foreach($append as $key => $value) {
+            if (isset($array[$key]) == false) {
+                $array[$key] = (\is_array($value) == true) ? [] : $value;
+            } 
+            $array[$key] = (\is_array($value) == true) ? \array_unique(\array_merge($array[$key],$value)) : $value;               
+        }   
+
+        return $array;
+    }
+
+    /**
+     * Unique multidimensional array
+     *
+     * @param array $array
+     * @return array
+     */
+    public static function uniqueMultidimensional(array $array)
+    {
+        $serialized = \array_map('serialize', $array);
+        $unique = \array_unique($serialized);
+        
+        return \array_intersect_key($array, $unique);
+    }
+
+    /**
+     * Recursive insert array
+     *
+     * @param array $array
+     * @param array $insert
+     * @return array
+     */
+    public static function arrayInsert($array, $insert) 
+    {      
+        if (\is_array($array) == true && \is_array($insert) == true) {
+            foreach ($insert as $key => $value) {              
+                if (isset($array[$key]) == true && \is_array($value) == true && \is_array($array[$key]) == true)  {
+                    $array[$key] = Self::arrayInsert($array[$key],$value);
+                }  else  {
+                    $array[$key] = $value;
+                }                     
+            }
+        }  
+
+        return($array);
+    }
+
+    /**
      * Return array with unique values 
      *
      * @param array $array
      * @return array
      */
-    public static function unique($array) {
+    public static function unique($array) 
+    {
         return \array_keys(\array_flip($array));
     } 
 
@@ -154,7 +210,7 @@ class Arrays
      * @param string $fullKey
      * @return array
      */
-    public static function merge($array1, $array2, $prevKey = "", $fullKey = "") 
+    public static function merge($array1, $array2, $prevKey = '', $fullKey = '') 
     {
         $result = $array1;
         if (\is_array($array2) == false) {
@@ -162,16 +218,16 @@ class Arrays
         }
 
         foreach ($array2 as $key => &$value) {
-            if ($fullKey != "") { 
-                $fullKey .= "/"; 
+            if ($fullKey != '') { 
+                $fullKey .= '/'; 
             }
             $fullKey .= $key;
             if (\is_array($value) && isset($result[$key]) && \is_array($result[$key])) {     
                 $result[$key] = Self::merge($result[$key],$value,$key,$fullKey);
             } else {
-                $fullKey = \str_replace("0/","",$fullKey);
+                $fullKey = \str_replace("0/",'',$fullKey);
                 $result[$key] = $value;               
-                $fullKey = \str_replace("/$prevKey/$key","",$fullKey);
+                $fullKey = \str_replace('/' . $prevKey . '/' . $key,'',$fullKey);
             }
         }
 
@@ -186,7 +242,7 @@ class Arrays
      */
     public static function toPath(array $array) 
     {    
-        $path = "";
+        $path = '';
         if (count($array) > 1) {          
             for ($i = 0; $i < count($array); $i++) { 
                 $path .= $array[$i] . DIRECTORY_SEPARATOR;
@@ -224,9 +280,10 @@ class Arrays
      * @param string $separator
      * @return string
      */
-    public static function toString(array $array, $separator = null) {
+    public static function toString(array $array, $separator = null) 
+    {
         if (count($array) == 0) {
-            return "";
+            return '';
         }
         $separator = (empty($separator) == true) ? PHP_EOL : $separator; 
 
@@ -298,11 +355,12 @@ class Arrays
      * @param array|string $keys
      * @return array
      */
-    public static function sliceByKeys(array $array, $keys = null) {
+    public static function sliceByKeys(array $array, $keys = null) 
+    {
         $keys = (empty($keys) == true) ? \array_keys($array) : $keys;
         $keys = (\is_array($keys) == false) ? [$keys] : $keys;
     
-        return \array_intersect_key($array,\array_fill_keys($keys, '1'));    
+        return \array_intersect_key($array,\array_fill_keys($keys,'1'));    
     }
 
     /**
