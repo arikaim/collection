@@ -23,7 +23,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      *
      * @var array
      */
-    protected $data;
+    protected $data = [];
     
     /**
      * Constructor
@@ -59,7 +59,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
         $data = File::readJsonFile($fileName,$vars);
        
         $data = (\is_array($data) == true) ? $data : [];
-        $data = (isset($data[$root]) == true) ? $data[$root] : $data;
+        $data = $data[$root] ?? $data;
         
         return new Self($data);
     }
@@ -93,7 +93,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      */
     public function offsetExists($key)
     {
-        return array_key_exists($key,$this->data);
+        return \array_key_exists($key,$this->data);
     }
 
     /**
@@ -105,6 +105,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
     public function union(array $data)
     {
         $this->data = $this->data + $data;
+
         return $this;
     }
 
@@ -117,6 +118,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
     public function replace(array $replacement)
     {
         $this->data = \array_replace($this->data,$replacement);
+
         return $this;
     }
 
@@ -128,7 +130,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      */
     public function offsetGet($key) 
     {
-        return (isset($this->data[$key]) == true) ? $this->data[$key] : null;
+        return $this->data[$key] ?? null;
     }
 
     /**
@@ -163,6 +165,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
     public function remove($key)
     {
         $this->offsetUnset($key);
+
         return $this;
     }
 
@@ -186,11 +189,12 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
     public function setBooleanValue($path, $value)
     {
         if (\is_numeric($value) == true) {
-            $value = (\intval($value) > 0) ? true : false;
+            $value = (\intval($value) > 0);
         }
         if (\is_string($value) == true) {
-            $value = ($value === 'true') ? true : false;
+            $value = ($value === 'true');
         }
+
         $this->setValue($path,$value);
     }
 
@@ -203,7 +207,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      */
     public function setValue($path,$value)
     {
-        $this->data = Arrays::setValue($this->data, $path, $value);
+        $this->data = Arrays::setValue($this->data,$path,$value);
     }
 
     /**
@@ -244,6 +248,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
     public function set($key, $value) 
     {
         $this->data[$key] = $value;
+
         return $this;
     }
 
@@ -325,6 +330,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
     public function withData($data)
     {
         $this->data = $data;
+
         return $this;        
     }
 
@@ -379,12 +385,8 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      * @return mixed
      */
     public function get($key, $default = null)
-    {      
-        if (isset($this->data[$key]) == false) {
-            return $default;
-        }
-        
-        return ($this->data[$key] == null) ? $default : $this->data[$key];         
+    {       
+        return $this->data[$key] ?? $default;       
     }
 
     /**
@@ -452,7 +454,8 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
     public function getByPath($path, $default = null)
     {
         $value = Arrays::getValue($this->data,$path);
-        return (empty($value) == true) ? $default : $value;
+        
+        return $value ?? $default;
     }
     
     /**
@@ -472,6 +475,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
                 }
             }
         }
+
         return true;
     }
 
