@@ -62,7 +62,7 @@ class FeedCollection extends Collection implements CollectionInterface, FeedsInt
     protected $perPageKey;
 
     /**
-     * Constructor
+     *  Constructor
      *
      *  @param string|null $baseUrl
      *  @param array|string $params

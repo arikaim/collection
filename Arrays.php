@@ -153,7 +153,7 @@ class Arrays
      */
     public static function getDefaultValue($array, $key, $default = null)
     {
-        return (isset($array[$key]) == true) ? $array[$key] : $default;
+        return $array[$key] ?? $default;
     }
 
     /**

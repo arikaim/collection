@@ -53,19 +53,19 @@ class Properties extends Collection implements CollectionInterface
                 $descriptor($property);
                 return $property;
             };
-            $property = $callback();
+            $property = $callback();          
         }
 
         $group = $property->getGroup();
         if ($property->isGroup() == true) {
             $this->add('groups',$property->getValue());
         }
-        if (empty($group) == false) {
+        if (empty($group) == false) {           
             $this->data[$group][$name] = $property->toArray();
-        } else {
+        } else {           
             $this->data[$name] = $property->toArray();
         }
-        
+
         return $this;
     }
 
@@ -102,8 +102,49 @@ class Properties extends Collection implements CollectionInterface
             return null;
         }
         $property = (empty($group) == true) ? $this->get($key) : $this->data[$group][$key];
+        $default = $property['default'] ?? null;
 
-        return (empty($property['value']) == true) ? $property['default'] : $property['value'];
+        if ($property['type'] == Property::BOOLEAN_TYPE) {
+            return $property['value'] ?? $default;
+        }
+
+        return (empty($property['value']) == true) ? $default : $property['value'];
+    }
+
+     /**
+     * Get property value
+     *
+     * @param string $key
+     * @return mixed
+     */
+    public function getValueAsText($key, $group = null)
+    {
+        $value = $this->getValue($key,$group);
+        $type = $this->getType($key,$group);
+
+        switch($type) {
+            case Property::BOOLEAN_TYPE:              
+                return (empty($value) == true || $value == 0 || $value == '0') ? 'false' : 'true';
+            break;
+        }
+
+        return (string)$value;
+    }
+
+    /**
+     * Get property type
+     *
+     * @param string $key
+     * @return int|null
+     */
+    public function getType($key, $group = null)
+    {
+        if ($this->has($key) == false) {
+            return null;
+        }
+        $property = (empty($group) == true) ? $this->get($key) : $this->data[$group][$key];
+
+        return $property['type'] ?? null;        
     }
 
     /**
@@ -138,7 +179,7 @@ class Properties extends Collection implements CollectionInterface
         $data = (empty($group) == false) ? $this->data[$group] : $this->data;
         $groups = $this->get('groups',[]);
 
-        foreach ($data as $key => $property) {
+        foreach ($data as $key => $property) {           
             if (\in_array($key,$groups) === true && empty($groups) == false) {               
                 continue;
             }
@@ -148,10 +189,11 @@ class Properties extends Collection implements CollectionInterface
             if ($property['type'] == Property::GROUP) {              
                 continue;
             }
-
-            $property['value'] = (empty($property['value']) == true) ? $property['default'] : $property['value'];
-
-            $itemGroup = $property['group'];
+                 
+            $propertyValue = $property['value'] ?? null;
+            $property['value'] = (empty($propertyValue) == true) ? $property['default'] : $propertyValue;
+            
+            $itemGroup = $property['group'] ?? null;
           
             if (empty($itemGroup) == false && $itemGroup != $group) {             
                 continue;
@@ -159,8 +201,7 @@ class Properties extends Collection implements CollectionInterface
             if ($editable == true) {
                 if ($property['readonly'] == false && $property['hidden'] == false) {
                     $result[] = $property;
-                }  
-               
+                }                 
             }                
             if ($editable == false) {
                 if ($property['readonly'] == true || $property['hidden'] == true) {
@@ -194,7 +235,8 @@ class Properties extends Collection implements CollectionInterface
             }
             if (\in_array($key,$groups) === true) {   
                 foreach ($property as $name => $item) {
-                    $value = (empty($item['value']) == true) ? $item['default'] : $item['value'];
+                    $default = $item['default'] ?? null;
+                    $value = (empty($item['value']) == true) ? $default : $item['value'];
                     $result[$key][$name] = $value;
                 }
                 continue;                           
@@ -208,6 +250,26 @@ class Properties extends Collection implements CollectionInterface
         }    
 
         return $result;
+    }
+
+    /**
+     * Clear property values
+     *
+     * @return void
+     */
+    public function clearValues()
+    {
+        $groups = $this->get('groups',[]);
+
+        foreach ($this->data as $key => $value) {
+            if (\in_array($key,$groups) === true) {
+                foreach ($value as $name => $item) {
+                    $this->data[$key][$name]['value'] = $this->data[$key][$name]['default'] ?? null;
+                }
+            } else {
+                $this->data[$key]['value'] = $this->data[$key]['default'] ?? null;
+            }    
+        }
     }
 
     /**

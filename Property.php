@@ -16,16 +16,16 @@ use Arikaim\Core\Collection\Interfaces\PropertyInterface;
  */
 class Property implements PropertyInterface
 {
-    const TEXT      = 0;
-    const NUMBER    = 1;
-    const CUSTOM    = 2;
-    const BOOLEAN   = 3;
-    const LIST      = 4;
-    const PHP_CLASS = 5;
-    const PASSWORD  = 6;
-    const URL       = 7;
-    const TEXT_AREA = 8;
-    const GROUP     = 9;
+    const TEXT         = 0;
+    const NUMBER       = 1;
+    const CUSTOM       = 2;
+    const BOOLEAN_TYPE = 3;
+    const LIST         = 4;
+    const PHP_CLASS    = 5;
+    const PASSWORD     = 6;
+    const URL          = 7;
+    const TEXT_AREA    = 8;
+    const GROUP        = 9;
 
     /**
      * Property type text names
@@ -71,7 +71,7 @@ class Property implements PropertyInterface
      *
      * @var string|null
      */
-    protected $group;
+    protected $group = null;
 
     /**
      * Default value
@@ -152,7 +152,7 @@ class Property implements PropertyInterface
         $this->description = $description;
         $this->required = $required;
         $this->help = $help;
-        $this->items = (empty($items) == true) ? [] : $items;
+        $this->items = $items ?? []; 
         $this->group = $group;
     }
 
