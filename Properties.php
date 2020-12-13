@@ -107,8 +107,9 @@ class Properties extends Collection implements CollectionInterface
         if ($property['type'] == Property::BOOLEAN_TYPE) {
             return $property['value'] ?? $default;
         }
+        $value = \trim($property['value'] ?? '');
 
-        return (empty($property['value']) == true) ? $default : $property['value'];
+        return (empty($value) == true) ? \trim($default) : $value;
     }
 
      /**
