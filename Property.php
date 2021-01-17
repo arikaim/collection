@@ -135,14 +135,25 @@ class Property implements PropertyInterface
      * @param string|null $name
      * @param mixed|null $value
      * @param mixed|null $default
-     * @param string|null $type
+     * @param string|int|null $type
      * @param string|null $title
      * @param string|null $description
      * @param boolean $required
      * @param string|null $help
      * @param array|null $items
      */
-    public function __construct($name = null, $value = null, $default = null, $type = Self::TEXT, $title = null, $description = null, $required = false, $help = null, $items = null, $group = null) 
+    public function __construct(
+        ?string $name = null, 
+        $value = null, 
+        $default = null, 
+        $type = Self::TEXT, 
+        ?string $title = null, 
+        ?string $description = null, 
+        bool $required = false, 
+        ?string $help = null, 
+        ?array $items = null, 
+        ?string $group = null
+    ) 
     {
         $this->name = $name;
         $this->value = $value;
@@ -161,7 +172,7 @@ class Property implements PropertyInterface
      *
      * @return boolean
      */
-    public function isReadonly()
+    public function isReadonly(): bool
     {
         return (empty($this->readonly) == true) ? false : $this->readonly;
     }
@@ -171,7 +182,7 @@ class Property implements PropertyInterface
      *
      * @return boolean
     */
-    public function isGroup()
+    public function isGroup(): bool
     {
         return ($this->type == Self::GROUP);
     }
@@ -181,7 +192,7 @@ class Property implements PropertyInterface
      *
      * @return boolean
     */
-    public function isHidden()
+    public function isHidden(): bool
     {
         return (empty($this->hidden) == true) ? false : $this->hidden;
     }
@@ -195,6 +206,7 @@ class Property implements PropertyInterface
     public function value($value)
     {
         $this->value = $value;
+
         return $this;
     }
 
@@ -204,9 +216,10 @@ class Property implements PropertyInterface
      * @param array $items
      * @return Property
     */
-    public function items($items)
+    public function items(array $items)
     {
         $this->items = $items;
+
         return $this;
     }
 
@@ -219,6 +232,7 @@ class Property implements PropertyInterface
     public function type($type)
     {
         $this->type = (\is_string($type) == true) ? $this->getTypeId($type) : $type;
+
         return $this;
     }
 
@@ -228,7 +242,7 @@ class Property implements PropertyInterface
      * @param boolean $readonly
      * @return Property
     */
-    public function readonly($readonly)
+    public function readonly(bool $readonly)
     {
         $this->readonly = $readonly;
         return $this;
@@ -240,7 +254,7 @@ class Property implements PropertyInterface
      * @param boolean $hidden
      * @return Property
     */
-    public function hidden($hidden)
+    public function hidden(bool $hidden)
     {
         $this->hidden = $hidden;
         return $this;
@@ -249,10 +263,10 @@ class Property implements PropertyInterface
     /**
      * Set property title
      *
-     * @param string $title
+     * @param string|null $title
      * @return Property
     */
-    public function title($title)
+    public function title(?string $title)
     {
         $this->title = $title;
         return $this;
@@ -264,7 +278,7 @@ class Property implements PropertyInterface
      * @param boolean $required
      * @return Property
     */
-    public function required($required)
+    public function required(bool $required)
     {
         $this->required = (boolean)$required;
         return $this;
@@ -285,10 +299,10 @@ class Property implements PropertyInterface
     /**
      * Set property description
      *
-     * @param string $description
+     * @param string|null $description
      * @return Property
      */
-    public function description($description)
+    public function description(?string $description)
     {
         $this->description = $description;
         return $this;
@@ -300,7 +314,7 @@ class Property implements PropertyInterface
      * @param string $help
      * @return Property
      */
-    public function help($help)
+    public function help(?string $help)
     {
         $this->help = $help;
         return $this;
@@ -312,7 +326,7 @@ class Property implements PropertyInterface
      * @param string $name
      * @return Property
      */
-    public function name($name)
+    public function name(?string $name)
     {
         $this->name = $name;
         return $this;
@@ -324,7 +338,7 @@ class Property implements PropertyInterface
      * @param string $name
      * @return Property
      */
-    public function group($name)
+    public function group(string $name)
     {
         $this->group = $name;
         return $this;
@@ -333,10 +347,10 @@ class Property implements PropertyInterface
     /**
      * Get type id
      *
-     * @param string $type
-     * @return void
+     * @param string|int $type
+     * @return int|null
      */
-    public function getTypeId($type)
+    public function getTypeId($type): ?int
     {
         $key = \array_search($type,$this->typeNames);       
         return ($key !== false) ? $key : null;
@@ -347,7 +361,7 @@ class Property implements PropertyInterface
      *
      * @return string
      */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -357,7 +371,7 @@ class Property implements PropertyInterface
      *
      * @return array
      */
-    public function getItems()
+    public function getItems(): array
     {
         return $this->items;
     }
@@ -367,7 +381,7 @@ class Property implements PropertyInterface
      *
      * @return boolean
      */
-    public function getRequired()
+    public function getRequired(): bool
     {
         return (empty($this->required) == true) ? false : $this->required;
     }
@@ -377,7 +391,7 @@ class Property implements PropertyInterface
      *
      * @return string|null
      */
-    public function getGroup()
+    public function getGroup(): ?string
     {
         return $this->group;
     }
@@ -395,7 +409,7 @@ class Property implements PropertyInterface
     /**
      * Return property version.
      *
-     * @return string|null
+     * @return mixed|null
      */
     public function getDefault()
     {
@@ -407,7 +421,7 @@ class Property implements PropertyInterface
      *
      * @return string|null
      */
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return (empty($this->title) == true) ? $this->name : $this->title;
     }
@@ -417,7 +431,7 @@ class Property implements PropertyInterface
      *
      * @return string|null
      */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
@@ -427,7 +441,7 @@ class Property implements PropertyInterface
      *
      * @return integer|null
      */
-    public function getType()
+    public function getType(): ?int
     {
         return $this->type;
     }
@@ -448,7 +462,7 @@ class Property implements PropertyInterface
      *
      * @return string|null
      */
-    public function getHelp()
+    public function getHelp(): ?string
     {
         return $this->help;
     }
@@ -458,7 +472,7 @@ class Property implements PropertyInterface
      *
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'name'        => $this->getName(),
@@ -482,7 +496,7 @@ class Property implements PropertyInterface
      * @param string $text
      * @return Property
      */
-    public static function createFromText($text)
+    public static function createFromText(string $text)
     {
         $result = [];
         $tokens = \explode('|',$text);
@@ -502,18 +516,18 @@ class Property implements PropertyInterface
      */
     public static function create(array $data)
     {
-        $name = (isset($data['name']) == true) ? $data['name'] : null;
-        $value = (isset($data['value']) == true) ? $data['value'] : null;
-        $required = (isset($data['required']) == true) ? $data['required'] : false;
-        $default = (isset($data['default']) == true) ? $data['default'] : null;
-        $type = (isset($data['type']) == true) ? $data['type'] : Self::TEXT;
-        $title = (isset($data['title']) == true) ? $data['title'] : null;
-        $description = (isset($data['description']) == true) ? $data['description'] : null;
-        $help = (isset($data['help']) == true) ? $data['help'] : null;
-        $readonly = (isset($data['readonly']) == true) ? $data['readonly'] : false;
-        $hidden = (isset($data['hidden']) == true) ? $data['hidden'] : false;
-        $items = (isset($data['items']) == true) ? $data['items'] : null;
-        $group = (isset($data['group']) == true) ? $data['group'] : null;
+        $name = $data['name'] ?? null;
+        $value = $data['value'] ?? null;
+        $required = $data['required'] ?? false;
+        $default = $data['default'] ?? null;
+        $type = $data['type'] ?? Self::TEXT;
+        $title = $data['title'] ?? null;
+        $description = $data['description'] ?? null;
+        $help = $data['help'] ?? null;
+        $readonly = $data['readonly'] ?? false;
+        $hidden = $data['hidden'] ?? false;
+        $items = $data['items'] ?? null;
+        $group = $data['group'] ?? null;
 
         $property = new Self($name,$value,$default,$type,$title,$description,$required,$help,$items,$group);
         

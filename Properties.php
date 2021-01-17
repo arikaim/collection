@@ -24,7 +24,7 @@ class Properties extends Collection implements CollectionInterface
      * 
      * @param array $data
      */
-    public function __construct($data = []) 
+    public function __construct(array $data = []) 
     {
         parent::__construct($data);
     }
@@ -36,7 +36,7 @@ class Properties extends Collection implements CollectionInterface
      * @param array|object|string|Callable $descriptor
      * @return Properties
      */
-    public function property($name, $descriptor)
+    public function property(string $name, $descriptor)
     {
         if (\is_array($descriptor) == true) {
             $property = Property::create($descriptor);
@@ -73,11 +73,22 @@ class Properties extends Collection implements CollectionInterface
      * Get property
      *
      * @param string $name
-     * @return PropertyInterface
+     * @return PropertyInterface|null
      */
-    public function getProperty($name)
+    public function getProperty(string $name): ?PropertyInterface
     {
-        return (isset($this->data[$name]) == true) ? $this->data[$name] : new Property($name);
+        $propertyData = $this->data[$name] ?? null;
+        if (empty($propertyData) == true) {
+            return null;
+        }
+        if (\is_array($propertyData) == true) {
+            return Property::create($propertyData);
+        }
+        if ($propertyData instanceof PropertyInterface) {
+            return $propertyData;   
+        }
+        
+        return null;
     }
 
     /**
@@ -85,7 +96,7 @@ class Properties extends Collection implements CollectionInterface
      *
      * @return array
      */
-    public function getProperties()
+    public function getProperties(): array
     {
         return $this->data;
     }
@@ -94,9 +105,10 @@ class Properties extends Collection implements CollectionInterface
      * Get property value
      *
      * @param string $key
+     * @param string|null $group
      * @return mixed
      */
-    public function getValue($key, $group = null)
+    public function getValue(string $key, ?string $group = null)
     {
         if ($this->has($key) == false) {
             return null;
@@ -116,9 +128,10 @@ class Properties extends Collection implements CollectionInterface
      * Get property value
      *
      * @param string $key
-     * @return mixed
+     * @param string|null $group
+     * @return string
      */
-    public function getValueAsText($key, $group = null)
+    public function getValueAsText(string $key, ?string $group = null): string
     {
         $value = $this->getValue($key,$group);
         $type = $this->getType($key,$group);
@@ -128,17 +141,18 @@ class Properties extends Collection implements CollectionInterface
                 return (empty($value) == true || $value == 0 || $value == '0') ? 'false' : 'true';
             break;
         }
-
-        return (string)$value;
+     
+        return (string)$value ?? '';
     }
 
     /**
      * Get property type
      *
      * @param string $key
+     * @param string|null $group
      * @return int|null
      */
-    public function getType($key, $group = null)
+    public function getType(string $key, ?string $group = null): ?int
     {
         if ($this->has($key) == false) {
             return null;
@@ -153,7 +167,7 @@ class Properties extends Collection implements CollectionInterface
      *
      * @return array
      */
-    public function getGroups() 
+    public function getGroups(): array 
     {
         $result = [];
         foreach ($this->data as $key => $property) {
@@ -172,9 +186,10 @@ class Properties extends Collection implements CollectionInterface
      *
      * @param boolean|null $editable
      * @param boolean|null $hidden
+     * @param string|null $group
      * @return array
      */
-    public function gePropertiesList($editable = null, $hidden = null, $group = null)
+    public function gePropertiesList(?bool $editable = null,?bool $hidden = null,?string $group = null): array
     {
         $result = [];
         $data = (empty($group) == false) ? $this->data[$group] : $this->data;
@@ -225,7 +240,7 @@ class Properties extends Collection implements CollectionInterface
      *
      * @return array
      */
-    public function getValues()
+    public function getValues(): array
     {
         $result = [];
         $groups = $this->get('groups',[]);
@@ -258,7 +273,7 @@ class Properties extends Collection implements CollectionInterface
      *
      * @return void
      */
-    public function clearValues()
+    public function clearValues(): void
     {
         $groups = $this->get('groups',[]);
 
@@ -279,7 +294,7 @@ class Properties extends Collection implements CollectionInterface
      * @param array $data
      * @return void
      */
-    public function setPropertyValues(array $data)
+    public function setPropertyValues(array $data): void
     {
         $groups = $this->get('groups',[]);
 
@@ -292,5 +307,22 @@ class Properties extends Collection implements CollectionInterface
                 $this->data[$key]['value'] = $value;        
             }    
         }
+    }
+
+    /**
+     * Set property value
+     *
+     * @param string $key
+     * @param mixed $value
+     * @return bool
+     */
+    public function setPropertyValue(string $key, $value): bool
+    {
+        if (isset($this->data[$key]) == false) {
+            return false;
+        }
+        $this->data[$key]['value'] = $value;
+        
+        return true;
     }
 }

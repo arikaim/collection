@@ -30,7 +30,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      *
      * @param array $data
      */
-    public function __construct($data = []) 
+    public function __construct(array $data = []) 
     {  
         $this->data = $data;
     }
@@ -54,7 +54,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      * @param array|null $vars
      * @return Collection
      */
-    public static function createFromFile($fileName, $root = null, $vars = null) 
+    public static function createFromFile(string $fileName, ?string $root = null, ?array $vars = null) 
     {      
         $data = File::readJsonFile($fileName,$vars);
        
@@ -80,7 +80,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      * @param string $key
      * @return bool
     */
-    public function has($key)
+    public function has(string $key): bool
     {
         return $this->offsetExists($key);
     }
@@ -162,7 +162,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      * @param string $key
      * @return Collection
      */
-    public function remove($key)
+    public function remove(string $key)
     {
         $this->offsetUnset($key);
 
@@ -176,17 +176,17 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      */
     public function count()
     {
-        return count($this->data);
+        return \count($this->data);
     }
 
     /**
      * Set bool value
      *
-     * @param string$path
+     * @param string $path
      * @param integer|string $value
      * @return void
      */
-    public function setBooleanValue($path, $value)
+    public function setBooleanValue(string $path, $value)
     {
         if (\is_numeric($value) == true) {
             $value = (\intval($value) > 0);
@@ -205,7 +205,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      * @param mixed $value
      * @return void
      */
-    public function setValue($path,$value)
+    public function setValue(string $path, $value): void
     {
         $this->data = Arrays::setValue($this->data,$path,$value);
     }
@@ -218,7 +218,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      * @param boolean $recursive
      * @return void
      */
-    public function merge($key, array $data, $recursive = false)
+    public function merge(string $key, array $data, bool $recursive = false): void
     {
         if (isset($this->data[$key]) == false) {
             $this->data[$key] = [];
@@ -233,7 +233,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      * @param boolean $recursive
      * @return void
      */
-    public function mergeItems(array $data, $recursive = false)
+    public function mergeItems(array $data, bool $recursive = false): void
     {            
         $this->data = ($recursive == false) ? \array_merge($this->data,$data) : \array_merge_recursive($this->data,$data);
     }
@@ -245,7 +245,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      * @param mixed $value Value
      * @return Collection
      */
-    public function set($key, $value) 
+    public function set(string $key, $value) 
     {
         $this->data[$key] = $value;
 
@@ -259,7 +259,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      * @param mixed $value
      * @return void
      */
-    public function add($key, $value) 
+    public function add(string $key, $value): void 
     {
         if (isset($this->data[$key]) == false) {
             $this->data[$key] = [];
@@ -276,7 +276,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      * @param string|null $subKey   
      * @return boolean
      */
-    public function push($key, $value, $subKey = null) 
+    public function push(string $key, $value, ?string $subKey = null): bool 
     {
         if ($subKey != null) {
             if (isset($this->data[$key][$subKey]) == false) {
@@ -303,7 +303,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      * @param string|null $subKey   
      * @return boolean
      */
-    public function prepend($key, $value, $subKey = null) 
+    public function prepend(string $key, $value, ?string $subKey = null): bool 
     {
         if ($subKey != null) {
             if (isset($this->data[$key][$subKey]) == false) {
@@ -327,7 +327,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      * @param array $data
      * @return Collection
      */
-    public function withData($data)
+    public function withData(array $data)
     {
         $this->data = $data;
 
@@ -350,7 +350,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      *
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         return \is_array($this->data) ? $this->data : [];
     }
@@ -361,7 +361,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      * @param string $key Name
      * @return boolean
      */
-    public function isEmpty($key)
+    public function isEmpty(string $key): bool
     {
         return (isset($this->data[$key]) == false) ? true : empty($this->data[$key]);      
     }
@@ -372,7 +372,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      * @param string $key
      * @return Collection
      */
-    public function getCollection($key)
+    public function getCollection(string $key)
     {
         return new Self($this->get($key,[]));
     }
@@ -384,7 +384,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      * @param mixed $default If key not exists return default value
      * @return mixed
      */
-    public function get($key, $default = null)
+    public function get(string $key, $default = null)
     {       
         return $this->data[$key] ?? $default;       
     }
@@ -396,9 +396,10 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      * @param mixed $default
      * @return array
      */
-    public function getArray($key, $default = null)
+    public function getArray(string $key, $default = null): array
     {
         $result = $this->get($key,$default);
+
         return (\is_array($result) == false) ? [] : $result;
     }
 
@@ -407,7 +408,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      *
      * @return void
      */
-    public function clear() 
+    public function clear(): void 
     {
         $this->data = [];
     }
@@ -415,7 +416,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
     /**
      * Clone object
      *
-     * @return object
+     * @return Self
      */
     public function copy()     
     {
@@ -451,7 +452,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      * @param mixed $default
      * @return mixed
      */
-    public function getByPath($path, $default = null)
+    public function getByPath(string $path, $default = null)
     {
         $value = Arrays::getValue($this->data,$path);
         
@@ -465,7 +466,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      * @param mixed $value
      * @return bool
      */
-    public function addField($path, $value)
+    public function addField(string $path, $value): bool
     {
         foreach ($this->data as $key => $item) {
             if (\is_array($item) == true) {
@@ -484,7 +485,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      *
      * @return array
      */
-    public function getItems()
+    public function getItems(): array
     {
         return $this->data;
     }

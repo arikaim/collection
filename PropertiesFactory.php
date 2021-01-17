@@ -35,7 +35,7 @@ class PropertiesFactory
      * @param boolean $resolveProperties
      * @return Properties
      */
-    public static function createFromFile($fileName, $resolveProperties = true)
+    public static function createFromFile(string $fileName, bool $resolveProperties = true)
     {
         $data = File::readJsonFile($fileName);
         $data = (\is_array($data) == true) ? $data : [];

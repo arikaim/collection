@@ -20,7 +20,7 @@ class Arrays
      * @param array $array
      * @return integer
      */
-    public static function recursiveCount($array) 
+    public static function recursiveCount($array): int 
     {
         if (\is_array($array) == false) {
             return 1;
@@ -41,7 +41,7 @@ class Arrays
      * @param array $append
      * @return array
      */
-    public static function arrayAppend(array $array, array $append)
+    public static function arrayAppend(array $array, array $append): array
     {
         foreach($append as $key => $value) {
             if (isset($array[$key]) == false) {
@@ -59,7 +59,7 @@ class Arrays
      * @param array $array
      * @return array
      */
-    public static function uniqueMultidimensional(array $array)
+    public static function uniqueMultidimensional(array $array): array
     {
         $serialized = \array_map('serialize', $array);
         $unique = \array_unique($serialized);
@@ -74,7 +74,7 @@ class Arrays
      * @param array $insert
      * @return array
      */
-    public static function arrayInsert($array, $insert) 
+    public static function arrayInsert(array $array,array $insert): array 
     {      
         if (\is_array($array) == true && \is_array($insert) == true) {
             foreach ($insert as $key => $value) {              
@@ -86,7 +86,7 @@ class Arrays
             }
         }  
 
-        return($array);
+        return $array;
     }
 
     /**
@@ -95,7 +95,7 @@ class Arrays
      * @param array $array
      * @return array
      */
-    public static function unique($array) 
+    public static function unique(array $array): array 
     {
         return \array_keys(\array_flip($array));
     } 
@@ -134,7 +134,7 @@ class Arrays
      * @param array $array
      * @return boolean
      */
-    public static function isAssociative(array $array)
+    public static function isAssociative(array $array): bool
     {
         if ([] === $array) {
             return false;
@@ -151,7 +151,7 @@ class Arrays
      * @param mixed $default
      * @return mixed
      */
-    public static function getDefaultValue($array, $key, $default = null)
+    public static function getDefaultValue(array $array,string $key, $default = null)
     {
         return $array[$key] ?? $default;
     }
@@ -160,7 +160,7 @@ class Arrays
      * Get array value by key path
      *
      * @param array $array
-     * @param string $path
+     * @param string|array $path
      * @param string $separator
      * @return mixed
      */
@@ -277,17 +277,17 @@ class Arrays
      * Convert array values to string 
      *
      * @param array $array
-     * @param string $separator
+     * @param string|null $separator
      * @return string
      */
-    public static function toString(array $array, $separator = null) 
+    public static function toString(array $array, ?string $separator = null): string 
     {
         if (count($array) == 0) {
             return '';
         }
         $separator = (empty($separator) == true) ? PHP_EOL : $separator; 
 
-        return \implode($separator, $array);
+        return \implode($separator,$array);
     }
 
     /**

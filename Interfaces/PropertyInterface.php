@@ -33,14 +33,14 @@ interface PropertyInterface
      *
      * @return string|null
      */
-    public function getTitle();
+    public function getTitle(): ?string;
 
     /**
      * Get property description.
      *
      * @return string|null
      */
-    public function getDescription();
+    public function getDescription(): ?string;
 
     /**
      * Get property type.
@@ -52,7 +52,7 @@ interface PropertyInterface
     /**
      * Get property default value.
      *
-     * @return string|null
+     * @return mixed|null
      */
     public function getDefault();
 
@@ -61,26 +61,26 @@ interface PropertyInterface
      *
      * @return boolean
      */
-    public function getRequired();
+    public function getRequired(): bool;
 
     /**
      * Get property help
      *
      * @return string|null
     */
-    public function getHelp();
+    public function getHelp(): ?string;
 
     /**
      * Get readonly attribute
      *
      * @return boolean
      */
-    public function isReadonly();
+    public function isReadonly(): bool;
 
     /**
      * Get hidden attribute
      *
      * @return boolean
     */
-    public function isHidden();
+    public function isHidden(): bool;
 }

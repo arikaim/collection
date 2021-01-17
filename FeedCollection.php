@@ -17,7 +17,12 @@ use Arikaim\Core\Utils\Curl;
 /**
  * Feed Collection class
  */
-class FeedCollection extends Collection implements CollectionInterface, FeedsInterface, \Countable, \ArrayAccess, \IteratorAggregate
+class FeedCollection extends Collection implements 
+    CollectionInterface, 
+    FeedsInterface, 
+    \Countable,
+    \ArrayAccess, 
+    \IteratorAggregate
 {
     /**
      * Item key mappings
@@ -70,7 +75,7 @@ class FeedCollection extends Collection implements CollectionInterface, FeedsInt
      *  @param string|null $pageKey
      *  @param string|null $perPageKey
      */
-    public function __construct($baseUrl = null, $params = [], $itemsKey = null, $pageKey = null, $perPageKey = null) 
+    public function __construct(?string $baseUrl = null, $params = [], $itemsKey = null, $pageKey = null, $perPageKey = null) 
     {  
         $this->baseUrl = $baseUrl;
         $this->params = $params;
@@ -208,7 +213,7 @@ class FeedCollection extends Collection implements CollectionInterface, FeedsInt
      * @param integer $page
      * @return void
      */
-    public function setPage($page)
+    public function setPage(int $page): void
     {
         if (empty($this->pageKey) == false) {
             $this->params[$this->pageKey] = $page;
@@ -221,7 +226,7 @@ class FeedCollection extends Collection implements CollectionInterface, FeedsInt
      * @param integer $perPage
      * @return void
      */
-    public function setPerPage($perPage)
+    public function setPerPage(int $perPage): void
     {
         if (empty($this->perPageKey) == false) {
             $this->params[$this->perPageKey] = $perPage;
@@ -233,7 +238,7 @@ class FeedCollection extends Collection implements CollectionInterface, FeedsInt
      *
      * @return string
      */
-    public function getUrl()
+    public function getUrl(): string
     {
         $queryString = (\is_string($this->params) == true) ? $this->params : '';
 
@@ -255,7 +260,7 @@ class FeedCollection extends Collection implements CollectionInterface, FeedsInt
      *
      * @return string
      */
-    public function getBaseUrl()
+    public function getBaseUrl(): string
     {
         return $this->baseUrl;
     }
@@ -265,7 +270,7 @@ class FeedCollection extends Collection implements CollectionInterface, FeedsInt
      *
      * @return string|null
      */
-    public function getItemsKey()
+    public function getItemsKey(): ?string
     {
         return $this->itemsKey;
     }
@@ -284,9 +289,9 @@ class FeedCollection extends Collection implements CollectionInterface, FeedsInt
      * Return feed items array
      *
      * @param boolean $keyMaps
-     * @return array|null
+     * @return array
      */
-    public function getItems($keyMaps = true)
+    public function getItems(bool $keyMaps = true): array
     {
         $items = $this->getItemsArray();
 
@@ -296,9 +301,9 @@ class FeedCollection extends Collection implements CollectionInterface, FeedsInt
     /**
      * Get items array
      *
-     * @return array
+     * @return array|null
      */
-    protected function getItemsArray()
+    protected function getItemsArray(): ?array
     {
         if (empty($this->itemsKey) == true) {
             $items = $this->data;
@@ -339,10 +344,10 @@ class FeedCollection extends Collection implements CollectionInterface, FeedsInt
      * Change array key 
      *
      * @param string $key
-     * @param string $mapTo
+     * @param mixed $mapTo
      * @return FeedCollection
      */
-    public function mapKey($key, $mapTo)
+    public function mapKey(string $key, $mapTo)
     {
         $this->keyMaps[$key] = $mapTo;
 
@@ -352,10 +357,10 @@ class FeedCollection extends Collection implements CollectionInterface, FeedsInt
     /**
      * Change item array keys
      *
-     * @param array $items
+     * @param array|null $items
      * @return array
      */
-    public function applyKeyMaps($items = null)
+    public function applyKeyMaps(?array $items = null): array
     {
         $items = (empty($items) == true) ? $this->data : $items;
  

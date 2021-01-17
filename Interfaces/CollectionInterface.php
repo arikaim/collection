@@ -19,12 +19,12 @@ interface CollectionInterface
      *
      * @return void
      */
-    public function clear();
+    public function clear(): void;
 
     /**
      * Copy collection 
      *
-     * @return void
+     * @return Collection
      */
     public function copy();
 
@@ -34,14 +34,14 @@ interface CollectionInterface
      * @param string $key
      * @return boolean
      */
-    public function isEmpty($key);
+    public function isEmpty(string $key): bool;
 
     /**
      * Convert collection to array
      *
      * @return array
      */
-    public function toArray();
+    public function toArray(): array;
 
     /**
      * Get value from collection
@@ -50,7 +50,7 @@ interface CollectionInterface
      * @param mixed $default If key not exists return default value
      * @return mixed
      */
-    public function get($key, $default = null);
+    public function get(string $key, $default = null);
 
     /**
      * Get value by path
@@ -59,7 +59,7 @@ interface CollectionInterface
      * @param mixed $default
      * @return mixed
      */
-    public function getByPath($path, $default = null);
+    public function getByPath(string $path, $default = null);
 
     /**
      * Set item value in collection
@@ -68,5 +68,5 @@ interface CollectionInterface
      * @param mixed $value Value
      * @return Collection
      */
-    public function set($key, $value);
+    public function set(string $key, $value);
 }

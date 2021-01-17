@@ -34,28 +34,29 @@ interface FeedsInterface
     /**
      * Return feed items array
      *
+     * @param boolean $keyMaps
      * @return array|null
      */
-    public function getItems();
+    public function getItems(bool $keyMaps = true): ?array;
 
     /**
      * Get items key
      *
      * @return string|null
      */
-    public function getItemsKey();
+    public function getItemsKey(): ?string;
 
     /**
      * Get base url
      *
      * @return string
      */
-    public function getBaseUrl();
+    public function getBaseUrl(): string;
 
     /**
      * Get full url
      *
      * @return string
      */
-    public function getUrl();
+    public function getUrl(): string;
 }
