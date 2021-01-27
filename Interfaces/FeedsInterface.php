@@ -19,9 +19,9 @@ interface FeedsInterface
      *
      * @param integer|null $page 
      * @param integer|null $perPage
-     * @return boolean
+     * @return FeedCollection
      */
-    public function fetch($page = null, $perPage = null);
+    public function fetch(?int $page = null, ?int $perPage = null);
 
     /**
      * Get feed item

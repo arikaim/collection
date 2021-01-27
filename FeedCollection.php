@@ -24,6 +24,9 @@ class FeedCollection extends Collection implements
     \ArrayAccess, 
     \IteratorAggregate
 {
+
+    const DEFAULT_ITEMS_PER_PAGE = 25;
+
     /**
      * Item key mappings
      *
@@ -75,7 +78,13 @@ class FeedCollection extends Collection implements
      *  @param string|null $pageKey
      *  @param string|null $perPageKey
      */
-    public function __construct(?string $baseUrl = null, $params = [], $itemsKey = null, $pageKey = null, $perPageKey = null) 
+    public function __construct(
+        ?string $baseUrl = null, 
+        $params = [], 
+        ?string $itemsKey = null, 
+        ?string $pageKey = null, 
+        ?string $perPageKey = null
+    ) 
     {  
         $this->baseUrl = $baseUrl;
         $this->params = $params;
@@ -89,17 +98,18 @@ class FeedCollection extends Collection implements
     /**
      * Find feed item
      *
-     * @param integer $id;
+     * @param string $key;
+     * @param mixed $value;
      * @param integer|null $page;
      * @param integer|null $perPage;
      * @return array|null
      */
-    public function findItem($key, $value, $page = null, $perPage = null)
+    public function findItem(string $key, $value, ?int $page = null, ?int $perPage = null): ?array
     {
         $this->fetch($page,$perPage);
         $items = $this->getItems();
        
-        foreach ($items as $item) {
+        foreach ($items as $item) {            
             if (isset($item[$key]) == true) {
                 if ($item[$key] == $value) {
                     return $item;
@@ -113,10 +123,10 @@ class FeedCollection extends Collection implements
     /**
      * Set page array key for params array 
      *
-     * @param string $key
+     * @param string|null $key
      * @return FeedCollection
      */
-    public function pageKey($key)
+    public function pageKey(?string $key)
     {
         $this->pageKey = $key;
         
@@ -126,9 +136,9 @@ class FeedCollection extends Collection implements
     /**
      * Get pake key 
      *
-     * @return integer
+     * @return string|null
      */
-    public function getPageKey()
+    public function getPageKey(): ?string
     {
         return $this->pageKey;
     }
@@ -136,10 +146,10 @@ class FeedCollection extends Collection implements
     /**
      * Set per page array key for params array 
      *
-     * @param string $key
+     * @param string|null $key
      * @return FeedCollection
      */
-    public function perPageKey($key)
+    public function perPageKey(?string $key)
     {
         $this->perPageKey = $key;
 
@@ -152,7 +162,7 @@ class FeedCollection extends Collection implements
      * @param string $url
      * @return FeedCollection
      */
-    public function baseUrl($url)
+    public function baseUrl(string $url)
     {
         $this->baseUrl = $url;
 
@@ -178,7 +188,7 @@ class FeedCollection extends Collection implements
      * @param string|null $key
      * @return FeedCollection
      */
-    public function itemsKey($key)
+    public function itemsKey(?string $key)
     {
         $this->itemsKey = $key;
 
@@ -187,11 +197,16 @@ class FeedCollection extends Collection implements
 
     /**
      * Fetch feed
-     *
+     * 
+     * @param int|null $page
+     * @param int|null $perPage
      * @return FeedCollection
      */
-    public function fetch($page = null, $perPage = null)
+    public function fetch(?int $page = null, ?int $perPage = Self::DEFAULT_ITEMS_PER_PAGE)
     {
+        $page = $page ?? 1;
+        $perPage = $perPage ?? Self::DEFAULT_ITEMS_PER_PAGE;
+
         $this->setPage($page);
         $this->setPerPage($perPage);
 
@@ -306,12 +321,10 @@ class FeedCollection extends Collection implements
     protected function getItemsArray(): ?array
     {
         if (empty($this->itemsKey) == true) {
-            $items = $this->data;
-        } else {
-            $items = (isset($this->data[$this->itemsKey]) == true) ? $this->data[$this->itemsKey] : null;
-        }
-        
-        return $items;
+            return $this->data;
+        } 
+
+        return $this->data[$this->itemsKey] ?? null;              
     } 
 
     /**
@@ -321,10 +334,10 @@ class FeedCollection extends Collection implements
      * @param boolean $keyMaps
      * @return mixed
      */
-    public function getItem($index, $keyMaps = true)
+    public function getItem($index, bool $keyMaps = true)
     {
         $items = $this->getItemsArray();
-        $item = (isset($items[$index]) == true) ? $items[$index] : [];
+        $item = $items[$index] ?? [];
         
         return ($keyMaps == true) ? $this->transformItem($item) : $item;           
     }
@@ -335,7 +348,7 @@ class FeedCollection extends Collection implements
      * @param array $keyMaps
      * @return void
      */
-    public function setKeyMaps($keyMaps)
+    public function setKeyMaps(array $keyMaps): void
     {
         $this->keyMaps = $keyMaps;
     }
@@ -362,7 +375,7 @@ class FeedCollection extends Collection implements
      */
     public function applyKeyMaps(?array $items = null): array
     {
-        $items = (empty($items) == true) ? $this->data : $items;
+        $items = $items ?? $this->data;
  
         foreach ($items as $key => $item) {                    
             $items[$key] = $this->transformItem($item);                       
@@ -377,13 +390,10 @@ class FeedCollection extends Collection implements
      * @param array $item
      * @return array
      */
-    protected function transformItem($item)
+    protected function transformItem(array $item): array
     {
         foreach ($this->keyMaps as $key => $value) {
-            if (\is_callable($value) == true) {          
-                $callback = function() use($value,$item) {
-                    return $value($item);
-                };        
+            if (\is_callable($value) == true) {                                
                 $item[$key] = $value($item);
                 continue;
             }

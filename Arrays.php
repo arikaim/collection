@@ -151,7 +151,7 @@ class Arrays
      * @param mixed $default
      * @return mixed
      */
-    public static function getDefaultValue(array $array,string $key, $default = null)
+    public static function getDefaultValue(array $array, string $key, $default = null)
     {
         return $array[$key] ?? $default;
     }
@@ -164,7 +164,7 @@ class Arrays
      * @param string $separator
      * @return mixed
      */
-    public static function getValue($array, $path, $separator = '/') 
+    public static function getValue($array, $path, string $separator = '/') 
     {    
         if (empty($path) == true) {
             return null;
@@ -184,11 +184,13 @@ class Arrays
      *
      * @param array $array
      * @param string $keySearch
-     * @return mixed
+     * @return array|null
      */
-    public static function getValues($array, $keySearch)
+    public static function getValues(array $array, $keySearch): ?array
     {
-        if (\is_array($array) == false) return null;
+        if (\is_array($array) == false) {
+            return null;
+        }
         $len = \strlen($keySearch);
         $result = [];
 
@@ -210,7 +212,7 @@ class Arrays
      * @param string $fullKey
      * @return array
      */
-    public static function merge($array1, $array2, $prevKey = '', $fullKey = '') 
+    public static function merge(array $array1, array $array2, string $prevKey = '', string $fullKey = ''): array 
     {
         $result = $array1;
         if (\is_array($array2) == false) {
@@ -240,7 +242,7 @@ class Arrays
      * @param array $array
      * @return string
      */
-    public static function toPath(array $array) 
+    public static function toPath(array $array): string 
     {    
         $path = '';
         if (count($array) > 1) {          
@@ -259,18 +261,19 @@ class Arrays
      * Convert text to array
      *
      * @param string $text
-     * @param string $separator
+     * @param string|null $separator
      * @return array
      */
-    public static function toArray($text, $separator = null) 
+    public static function toArray(string $text, ?string $separator = null): array 
     {
         if (\is_array($text) == true) {
             return $text;
         }
 
-        $separator = (empty($separator) == true) ? PHP_EOL : $separator;   
-
-        return \explode($separator,\trim($text));       
+        $separator = $separator ?? PHP_EOL;
+        $result = \explode($separator,\trim($text));    
+        
+        return (\is_array($result) == false) ? [] : $result;
     }
 
     /**
@@ -282,10 +285,10 @@ class Arrays
      */
     public static function toString(array $array, ?string $separator = null): string 
     {
-        if (count($array) == 0) {
+        if (\count($array) == 0) {
             return '';
         }
-        $separator = (empty($separator) == true) ? PHP_EOL : $separator; 
+        $separator = $separator ?? PHP_EOL;
 
         return \implode($separator,$array);
     }
@@ -296,7 +299,7 @@ class Arrays
      * @param object $object
      * @return array
      */
-    public static function convertToArray($object) 
+    public static function convertToArray($object): array 
     {
         $reflection = new \ReflectionClass(\get_class($object));
         $result = [];
@@ -313,17 +316,17 @@ class Arrays
     /**
      * Return true if array have sub items
      *
-     * @param array $array
+     * @param mixed $array
      * @return bool
      */
-    public static function haveSubItems($array)
+    public static function haveSubItems($array): bool
     {
         if (\is_array($array) == false) {
             return false;
         }
 
-        foreach ($array as $key => $value) {        
-            if (\is_array($array[$key]) == true) {               
+        foreach ($array as $item) {           
+            if (\is_array($item) == true) {               
                 return true;
             }
         }
@@ -335,16 +338,14 @@ class Arrays
      * Set default value if key not exist in array
      *
      * @param array $array
-     * @param string $key
+     * @param string|int $key
      * @param mixed $value
      * @return array
      */
-    public static function setDefault($array, $key, $value)
+    public static function setDefault(array $array, $key, $value): array
     {   
-        if (isset($array[$key]) == false) {          
-            $array[$key] = $value;
-        }
-
+        $array[$key] = $array[$key] ?? $value;
+       
         return $array;
     }
 
@@ -352,7 +353,7 @@ class Arrays
      * Slice array by keys
      *
      * @param array $array
-     * @param array|string $keys
+     * @param array|string|null $keys
      * @return array
      */
     public static function sliceByKeys(array $array, $keys = null) 
