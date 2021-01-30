@@ -17,7 +17,7 @@ class Arrays
     /**
      * Recursive array count
      *
-     * @param array $array
+     * @param mixed $array
      * @return integer
      */
     public static function recursiveCount($array): int 
