@@ -12,6 +12,7 @@ namespace Arikaim\Core\Collection;
 use Arikaim\Core\Collection\Interfaces\CollectionInterface;
 use Arikaim\Core\Collection\Arrays;
 use Arikaim\Core\Utils\File;
+use Arikaim\Core\Utils\Number;
 
 /**
  * Collection base class
@@ -167,6 +168,18 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
         $this->offsetUnset($key);
 
         return $this;
+    }
+
+    /**
+     * Remove empy items 
+     *
+     * @return void
+     */
+    public function removeEmptyItems(): void
+    {
+        $this->data = \array_filter($this->data,function($value) { 
+            return (!is_null($value) && $value !== ''); 
+        });
     }
 
     /**
@@ -386,7 +399,61 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      */
     public function get(string $key, $default = null)
     {       
-        return $this->data[$key] ?? $default;       
+        return $this->data[$key] ?? $default;          
+    }
+
+    /**
+     * Get boolean value
+     *
+     * @param string $key
+     * @param bool|null $default
+     * @return bool
+     */
+    public function getBool(string $key, ?bool $default = null): bool
+    {
+        return Number::toBoolean($this->get($key,$default));
+    }
+
+    /**
+     * Get text value
+     *
+     * @param string $key
+     * @param string|null $default
+     * @return string|null
+     */
+    public function getString(string $key, ?string $default = null): ?string
+    {
+        $value = $this->get($key,$default);
+    
+        return (\trim($value) == '') ? $default : (string)$value;
+    }
+
+    /**
+     * Get int value
+     *
+     * @param string $key
+     * @param int|null $default
+     * @return integer|null
+     */
+    public function getInt(string $key, ?int $default = null): ?int
+    {
+        $value = $this->get($key,$default);
+    
+        return (empty($value) == true) ? $default : (int)$value;
+    }
+
+    /**
+     * Get float value
+     *
+     * @param string $key
+     * @param float|null $default
+     * @return float|null
+     */
+    public function getFloat(string $key, ?float $default = null): ?float
+    {
+        $value = $this->get($key,$default);
+    
+        return (empty($value) == true) ? $default : (float)$value;
     }
 
     /**
