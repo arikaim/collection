@@ -184,50 +184,50 @@ class Properties extends Collection implements CollectionInterface
     /**
      * Get properties list
      *
-     * @param boolean|null $editable
+     * @param boolean|null $readonly
      * @param boolean|null $hidden
      * @param string|null $group
      * @return array
      */
-    public function gePropertiesList(?bool $editable = null,?bool $hidden = null,?string $group = null): array
+    public function gePropertiesList(?bool $readonly = null, ?bool $hidden = null, ?string $group = null): array
     {
         $result = [];
         $data = (empty($group) == false) ? $this->data[$group] : $this->data;
         $groups = $this->get('groups',[]);
 
-        foreach ($data as $key => $property) {           
-            if (\in_array($key,$groups) === true && empty($groups) == false) {               
+        foreach ($data as $item) {     
+            if (empty($group) == false && (\is_array($item) == false || $item == 'items')) {
                 continue;
             }
-            if ($key == 'groups') {
+            if ($item == 'groups') {                
                 continue;
             }
-            if ($property['type'] == Property::GROUP) {              
+            if (\in_array($item,$groups) === true && empty($groups) == false) {                               
                 continue;
             }
-                 
-            $propertyValue = $property['value'] ?? null;
-            $property['value'] = (empty($propertyValue) == true) ? $property['default'] : $propertyValue;
-            
-            $itemGroup = $property['group'] ?? null;
+        
+            $property = Property::create($item);                      
+            if ($property == null) {                         
+                continue;
+            }
           
-            if (empty($itemGroup) == false && $itemGroup != $group) {             
+            if ($property->isGroup() == true) {
                 continue;
             }
-            if ($editable == true) {
-                if ($property['readonly'] == false && $property['hidden'] == false) {
-                    $result[] = $property;
-                }                 
-            }                
-            if ($editable == false) {
-                if ($property['readonly'] == true || $property['hidden'] == true) {
-                    $result[] = $property;
-                }                 
+            if (empty($group) == false && $property->getGroup() != $group) {                  
+                continue;
             }
 
-            if (empty($hidden) == false) {
-                if ($property['hidden'] == $hidden) {
-                    $result[] = $property;
+            if (\is_null($readonly) == false) {
+                if ($property->isReadonly() == $readonly) {                
+                    $result[] = $property->toArray();   
+                    continue;                     
+                }                              
+            }
+         
+            if (\is_null($hidden) == false) {
+                if ($property->getHidden() == $hidden) {
+                    $result[] = $property->toArray();
                 } 
             }
         }    
@@ -243,20 +243,22 @@ class Properties extends Collection implements CollectionInterface
     public function getValues(): array
     {
         $result = [];
-        $groups = $this->get('groups',[]);
-
+      
         foreach ($this->data as $key => $property) {
             if ($key == 'groups') {
                 continue; 
             }
-            if (\in_array($key,$groups) === true) {   
+            if ($property['type'] == Property::GROUP) {
                 foreach ($property as $name => $item) {
+                    if ($name == 'items' || \is_array($item) == false) {
+                        continue;
+                    }
                     $default = $item['default'] ?? null;
                     $value = (empty($item['value']) == true) ? $default : $item['value'];
-                    $result[$key][$name] = $value;
+                    $result[$name] = $value;
                 }
-                continue;                           
-            } 
+            }
+         
             if ($property['type'] == Property::GROUP) {
                 continue;
             }

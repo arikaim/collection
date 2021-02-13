@@ -55,16 +55,16 @@ class Property implements PropertyInterface
     /**
      * Property value
      *
-     * @var mixed
+     * @var mixed|null
      */
-    protected $value;
+    protected $value = null;
 
     /**
      * Dropdown items
      *
      * @var array
      */
-    protected $items;
+    protected $items = [];
 
     /**
      * Group name
@@ -76,95 +76,88 @@ class Property implements PropertyInterface
     /**
      * Default value
      *
-     * @var mixed
+     * @var mixed|null
      */
-    protected $default;
+    protected $default = null;
 
     /**
      * Property title
      *
-     * @var string
+     * @var string|null
      */
-    protected $title;
+    protected $title = null;
 
     /**
      * Property type
      *
      * @var integer
      */
-    protected $type;
+    protected $type = 0;
 
     /**
      * Property description
      *
-     * @var string
+     * @var string|null
      */
-    protected $description;
+    protected $description = null;
 
     /**
      * Property required atribute
      *
      * @var boolean
      */
-    protected $required;
+    protected $required = false;
 
     /**
      * Property help
      *
-     * @var string
+     * @var string|null
      */
-    protected $help;
+    protected $help = null;
 
     /**
      * Readonly attribute
      *
      * @var boolean
      */
-    protected $readonly;
+    protected $readonly = false;
 
     /**
      * Hidden attribute
      *
      * @var boolean
      */
-    protected $hidden;
+    protected $hidden = false;
+
+    /**
+     * Display type
+     *
+     * @var string|null
+     */
+    protected $displayType = null;
 
     /**
      * Constructor
      *
-     * @param string|null $name
-     * @param mixed|null $value
-     * @param mixed|null $default
-     * @param string|int|null $type
-     * @param string|null $title
-     * @param string|null $description
-     * @param boolean $required
-     * @param string|null $help
-     * @param array|null $items
+     * @param string $name  
+     * @param array|null $data
      */
-    public function __construct(
-        ?string $name = null, 
-        $value = null, 
-        $default = null, 
-        $type = Self::TEXT, 
-        ?string $title = null, 
-        ?string $description = null, 
-        bool $required = false, 
-        ?string $help = null, 
-        ?array $items = null, 
-        ?string $group = null
-    ) 
+    public function __construct(string $name, ?array $data = null) 
     {
-        $this->name = $name;
-        $this->value = $value;
-        $this->type = $type;
-        $this->title = $title;
-        $this->default = $default;
-        $this->description = $description;
-        $this->required = $required;
-        $this->help = $help;
-        $this->items = $items ?? []; 
-        $this->group = $group;
+        $this->name = $name;    
+        if (\is_array($data) == true) {
+            $this->applyData($data);
+        }
+    }
+
+    /**
+     * Get readonly attribute
+     *
+     * @return boolean
+     */
+    public function getReadonly(): bool
+    {
+        return $this->readonly;
     }
 
     /**
@@ -237,6 +230,18 @@ class Property implements PropertyInterface
     }
 
     /**
+     * Set display type
+     *
+     * @param string|null $displayType
+     * @return Property
+     */
+    public function displayType(?string $displayType)
+    {
+        $this->displayType = $displayType;
+        return $this;
+    }
+
+    /**
      * Set readonly attribute
      *
      * @param boolean $readonly
@@ -258,6 +263,16 @@ class Property implements PropertyInterface
     {
         $this->hidden = $hidden;
         return $this;
+    }
+
+    /**
+     * Get hidden property
+     *
+     * @return boolean
+     */
+    public function getHidden(): bool
+    {
+        return $this->hidden;
     }
 
     /**
@@ -451,7 +466,7 @@ class Property implements PropertyInterface
      *
      * @return string
      */
-    public function getTypeText()
+    public function getTypeText(): string
     {
         $type = $this->getType();
         return (isset($this->typeNames[$type]) == true) ? $this->typeNames[$type] : 'unknow';
@@ -475,26 +490,40 @@ class Property implements PropertyInterface
     public function toArray(): array
     {
         return [
-            'name'        => $this->getName(),
-            'value'       => $this->getValue(),
-            'title'       => $this->getTitle(),
-            'description' => $this->description,
-            'default'     => $this->getDefault(),
-            'type'        => $this->getType(),
-            'required'    => $this->required,
-            'readonly'    => $this->isReadonly(),
-            'hidden'      => $this->isHidden(),
-            'items'       => $this->getItems(),
-            'group'       => $this->group,
-            'help'        => $this->help
+            'name'         => $this->getName(),
+            'value'        => $this->getValue(),
+            'title'        => $this->getTitle(),
+            'description'  => $this->description,
+            'default'      => $this->getDefault(),
+            'type'         => $this->getType(),
+            'required'     => $this->required,
+            'readonly'     => $this->isReadonly(),
+            'hidden'       => $this->isHidden(),
+            'items'        => $this->getItems(),
+            'display_type' => $this->displayType,
+            'group'        => $this->group,
+            'help'         => $this->help
         ];
     }
     
     /**
+     * Set property object params
+     *
+     * @param array $data
+     * @return void
+     */
+    public function applyData(array $data)
+    {
+        foreach($data as $key => $value) {
+            $this->{$key} = $value;
+        }
+    }
+
+    /**
      * Create property obj from text
      *
      * @param string $text
-     * @return Property
+     * @return Property|null
      */
     public static function createFromText(string $text)
     {
@@ -512,25 +541,17 @@ class Property implements PropertyInterface
      * Create property obj from array
      *
      * @param array $data
-     * @return Property
+     * @return Property|null
      */
     public static function create(array $data)
     {
         $name = $data['name'] ?? null;
-        $value = $data['value'] ?? null;
-        $required = $data['required'] ?? false;
-        $default = $data['default'] ?? null;
-        $type = $data['type'] ?? Self::TEXT;
-        $title = $data['title'] ?? null;
-        $description = $data['description'] ?? null;
-        $help = $data['help'] ?? null;
-        $readonly = $data['readonly'] ?? false;
-        $hidden = $data['hidden'] ?? false;
-        $items = $data['items'] ?? null;
-        $group = $data['group'] ?? null;
+        if (\is_null($name) == true) {
+            return null;
+        }
 
-        $property = new Self($name,$value,$default,$type,$title,$description,$required,$help,$items,$group);
+        $property = new Self($name,$data);
         
-        return $property->readonly($readonly)->hidden($hidden);
-    }
+        return $property;
+    }   
 }
