@@ -255,7 +255,9 @@ class Properties extends Collection implements CollectionInterface
             if ($key == 'groups') {
                 continue; 
             }
-            if ($property['type'] == Property::GROUP) {
+            $type = $property['type'] ?? null;
+
+            if ($type == Property::GROUP) {
                 foreach ($property as $name => $item) {
                     if ($name == 'items' || \is_array($item) == false) {
                         continue;
@@ -265,12 +267,10 @@ class Properties extends Collection implements CollectionInterface
                     $result[$name] = $value;
                 }
             }
-         
-            if ($property['type'] == Property::GROUP) {
-                continue;
-            }
-
-            $value = (empty($property['value']) == true) ? $property['default'] : $property['value'];
+            $propertyValue = $property['value'] ?? null;
+            $default = $property['default'] ?? null;
+            $value = (empty($propertyValue) == true) ? $default : $propertyValue;
+            
             $result[$key] = $value;         
         }    
 
