@@ -19,8 +19,15 @@ interface PropertyInterface
      *
      * @return string
      */
-    public function getName();
+    public function getName(): string;
 
+    /**
+     * Get property id.
+     *
+     * @return string|null
+     */
+    public function getId(): ?string;
+    
     /**
      * Get property value.
      *
@@ -45,9 +52,9 @@ interface PropertyInterface
     /**
      * Get property type.
      *
-     * @return string|null
+     * @return int|null
      */
-    public function getType();
+    public function getType(): ?int;
 
     /**
      * Get property default value.

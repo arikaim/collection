@@ -53,6 +53,13 @@ class Property implements PropertyInterface
     protected $name;
     
     /**
+     * Property id
+     *
+     * @var string|null
+     */
+    protected $id = null;
+
+    /**
      * Property value
      *
      * @var mixed|null
@@ -348,6 +355,18 @@ class Property implements PropertyInterface
     }
 
     /**
+     * Set property id
+     *
+     * @param string $id
+     * @return Property
+     */
+    public function id(?string $id)
+    {
+        $this->id = $id;
+        return $this;
+    }
+
+    /**
      * Set property group
      *
      * @param string $name
@@ -376,9 +395,19 @@ class Property implements PropertyInterface
      *
      * @return string
      */
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
+    }
+
+    /**
+     * Get property id.
+     *
+     * @return string|null
+     */
+    public function getId(): ?string
+    {
+        return $this->id;
     }
 
     /**
@@ -422,7 +451,7 @@ class Property implements PropertyInterface
     }
 
     /**
-     * Return property version.
+     * Get property default value.
      *
      * @return mixed|null
      */
@@ -490,7 +519,8 @@ class Property implements PropertyInterface
     public function toArray(): array
     {
         return [
-            'name'         => $this->getName(),
+            'id'           => $this->getId(),
+            'name'         => $this->getName(),        
             'value'        => $this->getValue(),
             'title'        => $this->getTitle(),
             'description'  => $this->description,

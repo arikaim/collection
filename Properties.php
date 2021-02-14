@@ -184,12 +184,12 @@ class Properties extends Collection implements CollectionInterface
     /**
      * Get properties list
      *
-     * @param boolean|null $readonly
-     * @param boolean|null $hidden
+     * @param boolean $readonly
+     * @param boolean $hidden
      * @param string|null $group
      * @return array
      */
-    public function gePropertiesList(?bool $readonly = null, ?bool $hidden = null, ?string $group = null): array
+    public function gePropertiesList(bool $readonly = false, bool $hidden = false, ?string $group = null): array
     {
         $result = [];
         $data = (empty($group) == false) ? $this->data[$group] : $this->data;
@@ -214,22 +214,29 @@ class Properties extends Collection implements CollectionInterface
             if ($property->isGroup() == true) {
                 continue;
             }
+
             if (empty($group) == false && $property->getGroup() != $group) {                  
                 continue;
             }
 
-            if (\is_null($readonly) == false) {
-                if ($property->isReadonly() == $readonly) {                
-                    $result[] = $property->toArray();   
-                    continue;                     
-                }                              
+            if ($readonly == true && $property->isReadonly() == false) {              
+                continue;                                                               
             }
-         
-            if (\is_null($hidden) == false) {
-                if ($property->getHidden() == $hidden) {
-                    $result[] = $property->toArray();
-                } 
+
+            if ($readonly == false && $property->isReadonly() == true) {              
+                continue;                                                               
             }
+
+            if ($hidden == true && $property->isHidden() == false) {
+                continue;              
+            }
+
+            if ($hidden == false && $property->isHidden() == true) {
+                continue;              
+            }
+
+            // add item
+            $result[] = $property->toArray();
         }    
 
         return $result;
