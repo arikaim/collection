@@ -51,6 +51,18 @@ trait ConfigProperties
     }
 
     /**
+     * Set property value
+     *
+     * @param string $key
+     * @param mixed $value
+     * @return void
+     */
+    public function setPropertyValue(string $key, $value): void
+    {
+        $this->configProperties->setPropertyValue($key,$value);
+    }
+
+    /**
      * Get config properties collection
      *
      * @param Properties|array|string $properties
