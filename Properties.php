@@ -110,9 +110,6 @@ class Properties extends Collection implements CollectionInterface
      */
     public function getValue(string $key, ?string $group = null)
     {
-        if ($this->has($key) == false) {
-            return null;
-        }
         $property = (empty($group) == true) ? $this->get($key) : $this->data[$group][$key];
         $default = $property['default'] ?? null;
 
