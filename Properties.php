@@ -39,6 +39,7 @@ class Properties extends Collection implements CollectionInterface
     public function property(string $name, $descriptor)
     {
         if (\is_array($descriptor) == true) {
+            $descriptor['name'] = $descriptor['name'] ?? $name;
             $property = Property::create($descriptor);
         }
         if (\is_object($descriptor) == true) {
@@ -55,8 +56,9 @@ class Properties extends Collection implements CollectionInterface
             };
             $property = $callback();          
         }
-
+      
         $group = $property->getGroup();
+        
         if ($property->isGroup() == true) {
             $this->add('groups',$property->getValue());
         }
@@ -307,10 +309,14 @@ class Properties extends Collection implements CollectionInterface
         foreach ($data as $key => $value) {
             if (\in_array($key,$groups) === true) {
                 foreach ($value as $name => $item) {
-                    $this->data[$key][$name]['value'] = $item;
+                    if (isset($this->data[$key]) == true) {
+                        $this->data[$key][$name]['value'] = $item;
+                    }                   
                 }
             } else {
-                $this->data[$key]['value'] = $value;        
+                if (isset($this->data[$key]) == true) {
+                    $this->data[$key]['value'] = $value;  
+                };                     
             }    
         }
     }

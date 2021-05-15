@@ -579,9 +579,11 @@ class Property implements PropertyInterface
         if (\is_null($name) == true) {
             return null;
         }
-
+        $type = $data['type'] ?? 0;
+     
         $property = new Self($name,$data);
-        
+        $property->type($type);
+
         return $property;
     }   
 }
