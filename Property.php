@@ -26,6 +26,7 @@ class Property implements PropertyInterface
     const URL          = 7;
     const TEXT_AREA    = 8;
     const GROUP        = 9;
+    const OAUTH        = 10;
 
     /**
      * Property type text names
@@ -42,7 +43,8 @@ class Property implements PropertyInterface
         'password',
         'url',
         'text-area',
-        'group'
+        'group',
+        'oauth'
     ];
 
     /**
