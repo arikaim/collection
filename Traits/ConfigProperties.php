@@ -27,13 +27,17 @@ trait ConfigProperties
     /**
      * Create config properties array
      *    
+     * @param array|null $values
      * @return array
      */
-    public function createConfigProperties(): array
+    public function createConfigProperties(?array $values = null): array
     {
         $properties = new Properties([],false);   
-        $callback = function() use($properties) {
-            $this->initConfigProperties($properties);           
+        $callback = function() use($properties,$values) {
+            $this->initConfigProperties($properties);  
+            if (\is_array($values) == true) {
+               $properties->setPropertyValues($values);
+            }         
             return $properties;
         };
       

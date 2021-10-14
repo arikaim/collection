@@ -188,7 +188,7 @@ class Properties extends Collection implements CollectionInterface
      * @param string|null $group
      * @return array
      */
-    public function gePropertiesList(bool $readonly = false, bool $hidden = false, ?string $group = null): array
+    public function getPropertiesList(bool $readonly = false, bool $hidden = false, ?string $group = null): array
     {
         $result = [];
         $data = (empty($group) == false) ? $this->data[$group] : $this->data;
