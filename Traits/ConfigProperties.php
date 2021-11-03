@@ -47,11 +47,12 @@ trait ConfigProperties
     /**
      * Get config properties collection
      *
+     * @param array|null $config
      * @return Properties
      */
-    public function getConfigProperties(): Properties
+    public function getConfigProperties(?array $config = null): Properties
     {
-        return (empty($this->configProperties) == true) ? new Properties([],false) : $this->configProperties;
+        return (empty($this->configProperties) == true) ? new Properties($config ?? [],false) : $this->configProperties;
     }
 
     /**
