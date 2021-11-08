@@ -112,10 +112,11 @@ class Properties extends Collection implements CollectionInterface
      */
     public function getValue(string $key, ?string $group = null)
     {
-        $property = (empty($group) == true) ? $this->get($key) : $this->data[$group][$key];
+        $property = (empty($group) == true) ? $this->get($key) : $this->data[$group][$key] ?? [];
         $default = $property['default'] ?? null;
+        $type = $property['type'] ?? null;
 
-        if ($property['type'] == Property::BOOLEAN_TYPE) {
+        if ($type == Property::BOOLEAN_TYPE) {
             return $property['value'] ?? $default;
         }
         $value = \trim($property['value'] ?? '');
