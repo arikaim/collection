@@ -13,6 +13,7 @@ use Arikaim\Core\Collection\Interfaces\CollectionInterface;
 use Arikaim\Core\Collection\Arrays;
 use Arikaim\Core\Utils\File;
 use Arikaim\Core\Utils\Number;
+use Traversable;
 
 /**
  * Collection base class
@@ -70,7 +71,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      *
      * @return ArrayIterator
      */
-    public function getIterator()
+    public function getIterator(): Traversable 
     {
         return new \ArrayIterator($this->data);
     }
@@ -92,7 +93,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      * @param string $key
      * @return bool
      */
-    public function offsetExists($key)
+    public function offsetExists($key): bool
     {
         return \array_key_exists($key,$this->data);
     }
@@ -141,7 +142,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      * @param mixed $value
      * @return void
      */
-    public function offsetSet($key, $value)
+    public function offsetSet($key, $value): void
     {
         $this->data[$key] = $value;
     }
@@ -152,7 +153,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      * @param string $key
      * @return void
      */
-    public function offsetUnset($key)
+    public function offsetUnset($key): void
     {
         unset($this->data[$key]);
     }
@@ -187,7 +188,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      *
      * @return integer
      */
-    public function count()
+    public function count(): int
     {
         return \count($this->data);
     }
