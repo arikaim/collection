@@ -90,12 +90,12 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
     /**
      * Return true if key exists in collection 
      *
-     * @param string $key
+     * @param mixed $offset
      * @return bool
      */
-    public function offsetExists($key): bool
+    public function offsetExists(mixed $offset): bool
     {
-        return \array_key_exists($key,$this->data);
+        return \array_key_exists($offset,$this->data);
     }
 
     /**
@@ -127,35 +127,35 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
     /**
      * Get item 
      *
-     * @param string $key
+     * @param mixed $offset
      * @return mixed
      */
-    public function offsetGet($key) 
+    public function offsetGet(mixed $offset): mixed
     {
-        return $this->data[$key] ?? null;
+        return $this->data[$offset] ?? null;
     }
 
     /**
      * Set item
      *
-     * @param string $key
+     * @param mixed $offset
      * @param mixed $value
      * @return void
      */
-    public function offsetSet($key, $value): void
+    public function offsetSet(mixed $offset, mixed $value): void
     {
-        $this->data[$key] = $value;
+        $this->data[$offset] = $value;
     }
     
     /**
      * Remove item
      *
-     * @param string $key
+     * @param mixed $offset
      * @return void
      */
-    public function offsetUnset($key): void
+    public function offsetUnset(mixed $offset): void
     {
-        unset($this->data[$key]);
+        unset($this->data[$offset]);
     }
 
     /**
