@@ -93,7 +93,8 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      * @param mixed $offset
      * @return bool
      */
-    public function offsetExists(mixed $offset): bool
+    #[\ReturnTypeWillChange]
+    public function offsetExists($offset)
     {
         return \array_key_exists($offset,$this->data);
     }
@@ -130,7 +131,8 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      * @param mixed $offset
      * @return mixed
      */
-    public function offsetGet(mixed $offset): mixed
+    #[\ReturnTypeWillChange]
+    public function offsetGet($offset)
     {
         return $this->data[$offset] ?? null;
     }
@@ -142,7 +144,8 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      * @param mixed $value
      * @return void
      */
-    public function offsetSet(mixed $offset, mixed $value): void
+    #[\ReturnTypeWillChange]
+    public function offsetSet($offset, $value)
     {
         $this->data[$offset] = $value;
     }
@@ -153,7 +156,8 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      * @param mixed $offset
      * @return void
      */
-    public function offsetUnset(mixed $offset): void
+    #[\ReturnTypeWillChange]
+    public function offsetUnset($offset)
     {
         unset($this->data[$offset]);
     }
