@@ -285,12 +285,7 @@ class Arrays
      */
     public static function toString(array $array, ?string $separator = null): string 
     {
-        if (\count($array) == 0) {
-            return '';
-        }
-        $separator = $separator ?? PHP_EOL;
-
-        return \implode($separator,$array);
+        return (\count($array) == 0) ? '' : \implode($separator ?? PHP_EOL,$array);
     }
 
     /**

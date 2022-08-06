@@ -282,7 +282,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
         if (isset($this->data[$key]) == false) {
             $this->data[$key] = [];
         }       
-        \array_push($this->data[$key],$value);
+        $this->data[$key][] = $value;
         $this->data[$key] = \array_values(\array_unique($this->data[$key]));
     }
     
@@ -300,13 +300,13 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
             if (isset($this->data[$key][$subKey]) == false) {
                 $this->data[$key][$subKey] = [];
             } 
-            \array_push($this->data[$key][$subKey],$value);  
+            $this->data[$key][$subKey][] = $value;  
             $this->data[$key][$subKey] = \array_unique($this->data[$key][$subKey],SORT_REGULAR);
         } else {
             if (isset($this->data[$key]) == false) {
                 $this->data[$key] = [];
             }    
-            \array_push($this->data[$key],$value);  
+            $this->data[$key][] = $value;  
             $this->data[$key] = \array_unique($this->data[$key],SORT_REGULAR);
         }
         
