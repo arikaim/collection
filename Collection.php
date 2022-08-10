@@ -12,13 +12,15 @@ namespace Arikaim\Core\Collection;
 use Arikaim\Core\Collection\Interfaces\CollectionInterface;
 use Arikaim\Core\Collection\Arrays;
 use Arikaim\Core\Utils\File;
-use Arikaim\Core\Utils\Number;
 use Traversable;
+use Countable;
+use ArrayAccess;
+use IteratorAggregate;
 
 /**
  * Collection base class
  */
-class Collection implements CollectionInterface, \Countable, \ArrayAccess, \IteratorAggregate
+class Collection implements CollectionInterface, Countable, ArrayAccess, IteratorAggregate
 {
     /**
      * Collection items data
@@ -59,8 +61,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
     public static function createFromFile(string $fileName, ?string $root = null, ?array $vars = null) 
     {      
         $data = File::readJsonFile($fileName,$vars);
-       
-        $data = (\is_array($data) == true) ? $data : [];
+        $data = ($data === false) ? [] : $data;
         $data = $data[$root] ?? $data;
         
         return new Self($data);
@@ -416,7 +417,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, \Iter
      */
     public function getBool(string $key, ?bool $default = null): bool
     {
-        return Number::toBoolean($this->get($key,$default));
+        return \Arikaim\Core\Utils\Number::toBoolean($this->get($key,$default));
     }
 
     /**
