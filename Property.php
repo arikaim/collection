@@ -451,7 +451,7 @@ class Property implements PropertyInterface
      */
     public function getValue()
     {
-        return (\is_null($this->value) == true) ? $this->getDefault() : $this->value;
+        return ($this->value === null) ? $this->getDefault() : $this->value;
     }
 
     /**
@@ -580,7 +580,7 @@ class Property implements PropertyInterface
     public static function create(array $data)
     {
         $name = $data['name'] ?? null;
-        if (\is_null($name) == true) {
+        if ($name === null) {
             return null;
         }
         $type = $data['type'] ?? 0;

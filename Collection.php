@@ -184,7 +184,7 @@ class Collection implements CollectionInterface, Countable, ArrayAccess, Iterato
     public function removeEmptyItems(): void
     {
         $this->data = \array_filter($this->data,function($value) { 
-            return (!is_null($value) && $value !== ''); 
+            return ($value !== null && $value !== ''); 
         });
     }
 
