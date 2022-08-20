@@ -136,11 +136,7 @@ class Arrays
      */
     public static function isAssociative(array $array): bool
     {
-        if ([] === $array) {
-            return false;
-        }
-
-        return (\array_keys($array) !== \range(0,\count($array) - 1));
+        return ([] === $array) ? false : (\array_keys($array) !== \range(0,\count($array) - 1));
     }
 
     /**
@@ -266,14 +262,7 @@ class Arrays
      */
     public static function toArray(string $text, ?string $separator = null): array 
     {
-        if (\is_array($text) == true) {
-            return $text;
-        }
-
-        $separator = $separator ?? PHP_EOL;
-        $result = \explode($separator,\trim($text));    
-        
-        return (\is_array($result) == false) ? [] : $result;
+        return \explode($separator ?? PHP_EOL,\trim($text));    
     }
 
     /**
@@ -311,15 +300,11 @@ class Arrays
     /**
      * Return true if array have sub items
      *
-     * @param mixed $array
+     * @param array $array
      * @return bool
      */
-    public static function haveSubItems($array): bool
+    public static function haveSubItems(array $array): bool
     {
-        if (\is_array($array) == false) {
-            return false;
-        }
-
         foreach ($array as $item) {           
             if (\is_array($item) == true) {               
                 return true;
@@ -365,7 +350,7 @@ class Arrays
      * @param array $array
      * @return array
      */
-    public static function removeEmpty(array $array)
+    public static function removeEmpty(array $array): array
     {
         return \array_filter($array,function($value) {
             return !empty($value) || $value === 0;
@@ -379,13 +364,12 @@ class Arrays
      * @param array $keys
      * @return array
      */
-    public static function arrayColumns(array $data, array $keys)
+    public static function arrayColumns(array $data, array $keys): array
     {    
         $keys = \array_flip($keys);
-        $filtered = \array_map(function($item) use($keys) {
-            return \array_intersect_key($item,$keys);
-        },$data);
 
-        return $filtered;
+        return \array_map(function($item) use($keys) {
+            return \array_intersect_key($item,$keys);
+        },$data);       
     }
 }
