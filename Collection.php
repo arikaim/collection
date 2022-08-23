@@ -11,7 +11,6 @@ namespace Arikaim\Core\Collection;
 
 use Arikaim\Core\Collection\Interfaces\CollectionInterface;
 use Arikaim\Core\Collection\Arrays;
-use Arikaim\Core\Utils\File;
 use Traversable;
 use Countable;
 use ArrayAccess;
@@ -60,11 +59,18 @@ class Collection implements CollectionInterface, Countable, ArrayAccess, Iterato
      */
     public static function createFromFile(string $fileName, ?string $root = null, ?array $vars = null) 
     {      
-        $data = File::readJsonFile($fileName,$vars);
-        $data = ($data === false) ? [] : $data;
-        $data = $data[$root] ?? $data;
-        
-        return new Self($data);
+        $data = [];
+        if (\file_exists($fileName) == true) {
+            $json = \file_get_contents($fileName);   
+            if (empty($vars) == false) {
+                $json = \Arikaim\Core\Utils\Text::render($json,$vars);
+            }     
+    
+            $data = \json_decode($json,true);
+            $data = (\is_array($data) == false) ? [] : $data;    
+        }
+           
+        return new Self($data[$root] ?? $data);
     }
 
     /**
@@ -227,6 +233,34 @@ class Collection implements CollectionInterface, Countable, ArrayAccess, Iterato
     public function setValue(string $path, $value): void
     {
         $this->data = Arrays::setValue($this->data,$path,$value);
+    }
+
+    /**
+     * Set array value
+     *
+     * @param array $array
+     * @param string $path
+     * @param mixed $value
+     * @param string $separator
+     * @return array
+     */
+    public static function setArrayValue(array $array, $path, $value, string $separator = '/'): array
+    {
+        if (empty($path) == true) {
+            return $array;
+        }   
+        $segments = \is_array($path) ? $path : \explode($separator,$path);
+        $current = &$array;
+
+        foreach ($segments as $segment) {
+            if (isset($current[$segment]) == false) {
+                $current[$segment] = [];
+            }
+            $current = &$current[$segment];
+        }
+        $current = $value;
+
+        return $array;
     }
 
     /**

@@ -109,10 +109,10 @@ class Arrays
      * @param string $separator
      * @return array
      */
-    public static function setValue($array, $path, $value, $separator = '/') 
+    public static function setValue(array $array, $path, $value, string $separator = '/'): array
     {
-        if (!$path) {
-            return null;
+        if (empty($path) == true) {
+            return $array;
         }   
         $segments = \is_array($path) ? $path : \explode($separator,$path);
         $current = &$array;
@@ -180,13 +180,10 @@ class Arrays
      *
      * @param array $array
      * @param string $keySearch
-     * @return array|null
+     * @return array
      */
-    public static function getValues(array $array, $keySearch): ?array
+    public static function getValues(array $array, string $keySearch): array
     {
-        if (\is_array($array) == false) {
-            return null;
-        }
         $len = \strlen($keySearch);
         $result = [];
 
