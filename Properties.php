@@ -121,7 +121,7 @@ class Properties extends Collection implements CollectionInterface
         }
         $value = \trim($property['value'] ?? '');
 
-        return (empty($value) == true) ? \trim($default) : $value;
+        return (empty($value) == true) ? \trim($default ?? '') : $value;
     }
 
      /**

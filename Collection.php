@@ -463,7 +463,7 @@ class Collection implements CollectionInterface, Countable, ArrayAccess, Iterato
      */
     public function getString(string $key, ?string $default = null): ?string
     {
-        $value = $this->get($key,$default);
+        $value = $this->get($key,$default ?? '');
     
         return (\trim($value) == '') ? $default : (string)$value;
     }
