@@ -10,6 +10,7 @@
 namespace Arikaim\Core\Collection\Table;
 
 use Arikaim\Core\Collection\Collection;
+use \Closure;
 
 /**
  * Table class
@@ -43,6 +44,28 @@ class Table extends Collection
 
         $this->header = $header ?? [];
         $this->separator = $separator;
+    }
+
+    /**
+     * Apply func to column
+     *
+     * @param string  $columnName
+     * @param Closure $callback
+     * @return object
+     */
+    public function apply(string $columnName, Closure $callback): object
+    {
+        $key = $this->getColumnKey($columnName);
+        if ($key === false) {
+            return $this;
+        }
+
+        foreach ($this->data as $index => $row) {
+           $row[$key] = $callback($row[$key]);
+           $this->data[$index] = $row;
+        }
+
+        return $this;
     }
 
     /**

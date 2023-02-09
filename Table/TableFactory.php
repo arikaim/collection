@@ -16,8 +16,8 @@ use Arikaim\Core\Collection\Table\Table;
  */
 class TableFactory
 {   
-    /** */
-    public static function loadCsv(string $fileName, string $separator = ','): ?object
+   
+    public static function loadCsv(string $fileName, string $separator = ','): ?Table
     {
         $file = \fopen($fileName,'r');
         if ($file === false) {
@@ -37,5 +37,21 @@ class TableFactory
         \fclose($file);
 
         return new Table($rows,$header,$separator);
+    }
+
+    /**
+     * Create form array
+     *
+     * @param array $rows
+     * @param array|null $header
+     * @return Table|null
+     */
+    public static function createFromArray(array $rows, ?array $header = null): ?Table
+    {
+        if ($header == null) {
+            $header = \array_shift($rows);
+        }
+       
+        return new Table($rows,$header);
     }
 }
