@@ -14,6 +14,20 @@ namespace Arikaim\Core\Collection\Interfaces;
  */
 interface PropertyInterface
 {    
+    const TEXT              = 0;
+    const NUMBER            = 1;
+    const CUSTOM            = 2;
+    const BOOLEAN_TYPE      = 3;
+    const LIST              = 4;
+    const PHP_CLASS         = 5;
+    const PASSWORD          = 6;
+    const URL               = 7;
+    const TEXT_AREA         = 8;
+    const GROUP             = 9;
+    const OAUTH             = 10;
+    const LANGUAGE_DROPDOWN = 11;
+    const COLLECTION        = 12;
+
     /**
      * Get property name.
      *

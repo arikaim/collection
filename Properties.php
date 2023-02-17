@@ -30,7 +30,7 @@ class Properties extends Collection implements CollectionInterface
     }
 
     /**
-     * Set property 
+     * Create property 
      *
      * @param string $name
      * @param array|object|string|Callable $descriptor
@@ -116,7 +116,7 @@ class Properties extends Collection implements CollectionInterface
         $default = $property['default'] ?? null;
         $type = $property['type'] ?? null;
 
-        if ($type == Property::BOOLEAN_TYPE) {
+        if ($type == PropertyInterface::BOOLEAN_TYPE) {
             return $property['value'] ?? $default;
         }
         $value = \trim($property['value'] ?? '');
@@ -137,7 +137,7 @@ class Properties extends Collection implements CollectionInterface
         $type = $this->getType($key,$group);
 
         switch($type) {
-            case Property::BOOLEAN_TYPE:              
+            case PropertyInterface::BOOLEAN_TYPE:              
                 return (empty($value) == true || $value == 0 || $value == '0') ? 'false' : 'true';
             break;
         }
@@ -172,7 +172,7 @@ class Properties extends Collection implements CollectionInterface
         $result = [];
         foreach ($this->data as $key => $property) {
             if (isset($property['type']) == true) {
-                if ($property['type'] == Property::GROUP) {
+                if ($property['type'] == PropertyInterface::GROUP) {
                     $result[] = $property;
                 }              
             }
@@ -257,7 +257,7 @@ class Properties extends Collection implements CollectionInterface
             }
             $type = $property['type'] ?? null;
 
-            if ($type == Property::GROUP) {
+            if ($type == PropertyInterface::GROUP) {
                 foreach ($property as $name => $item) {
                     if ($name == 'items' || \is_array($item) == false) {
                         continue;
