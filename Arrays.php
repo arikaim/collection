@@ -15,6 +15,31 @@ namespace Arikaim\Core\Collection;
 class Arrays 
 {
     /**
+     * Format all numeric values in array
+     *
+     * @param array       $array
+     * @param integer     $decimals
+     * @param string|null $decimalSeparator
+     * @param string|null $thousandsSeparator
+     * @return array
+     */
+    public static function numberFormat(
+        array $array, 
+        int $decimals = 2,
+        ?string $decimalSeparator = '.',
+        ?string $thousandsSeparator = ' '
+    ): array
+    {
+        \array_walk_recursive($array,function(&$item) use ($decimals,$decimalSeparator,$thousandsSeparator) {
+            if (\is_numeric($item) == true) {               
+                $item = \number_format((float)$item,$decimals,$decimalSeparator,$thousandsSeparator);
+            } 
+        });
+
+        return $array;
+    }
+
+    /**
      * Recursive array count
      *
      * @param mixed $array
