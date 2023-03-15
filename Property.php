@@ -33,7 +33,8 @@ class Property implements PropertyInterface
         'text-area',
         'group',
         'oauth',
-        'language-dropdown'
+        'language-dropdown',
+        'image'
     ];
 
     /**
