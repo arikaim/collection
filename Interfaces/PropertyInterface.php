@@ -26,7 +26,8 @@ interface PropertyInterface
     const GROUP             = 9;
     const OAUTH             = 10;
     const LANGUAGE_DROPDOWN = 11;
-    const COLLECTION        = 12;
+    const IMAGE             = 12;
+    const KEY               = 13;
 
     /**
      * Get property name.
