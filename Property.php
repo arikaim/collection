@@ -34,7 +34,8 @@ class Property implements PropertyInterface
         'group',
         'oauth',
         'language-dropdown',
-        'image'
+        'image',
+        'key'
     ];
 
     /**
