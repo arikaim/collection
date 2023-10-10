@@ -80,7 +80,7 @@ abstract class AbstractDescriptor
      * @param string $name
      * @return Properties|null
      */
-    protected function collection(string $name): ?Properties
+    public function collection(string $name): ?Properties
     {
         return $this->collections[$name] ?? null;
     }
