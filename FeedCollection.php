@@ -106,12 +106,15 @@ class FeedCollection extends Collection implements
      */
     public function findItem(string $key, $value, ?int $page = null, ?int $perPage = null): ?array
     {
+        $value = \trim($value);
+
         $this->fetch($page,$perPage);
         $items = $this->getItems();
-       
+    
         foreach ($items as $item) {            
             if (isset($item[$key]) == true) {
-                if ($item[$key] == $value) {
+                $text = \trim($item[$key]);
+                if ($text == $value) {                   
                     return $item;
                 }
             }
