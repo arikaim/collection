@@ -28,6 +28,11 @@ interface PropertyInterface
     const LANGUAGE_DROPDOWN = 11;
     const IMAGE             = 12;
     const KEY               = 13;
+    const PRICE             = 14;
+    const FILE              = 15;
+    const DATE              = 16;
+    const TIME              = 17;
+    const TIME_INTERVAL     = 18;
 
     /**
      * Get property name.

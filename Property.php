@@ -21,7 +21,7 @@ class Property implements PropertyInterface
      *
      * @var array
      */
-    private $typeNames = [
+    const TYPES = [
         'text',
         'number',
         'custom',
@@ -35,7 +35,12 @@ class Property implements PropertyInterface
         'oauth',
         'language-dropdown',
         'image',
-        'key'
+        'key',
+        'price',
+        'file',
+        'date',
+        'time',
+        'time-interval'
     ];
 
     /**
@@ -177,7 +182,7 @@ class Property implements PropertyInterface
     */
     public function isGroup(): bool
     {
-        return ($this->type == Self::GROUP);
+        return ($this->type == PropertyInterface::GROUP);
     }
 
     /**
@@ -379,7 +384,19 @@ class Property implements PropertyInterface
      */
     public function getTypeId($type): ?int
     {
-        $key = \array_search($type,$this->typeNames);       
+        $key = \array_search($type,Self::TYPES);       
+        return ($key !== false) ? $key : null;
+    }
+
+    /**
+     * Get type index
+     *
+     * @param string $type
+     * @return integer|null
+     */
+    public static function getTypeIndex(string $type): ?int
+    {
+        $key = \array_search($type,Self::TYPES);       
         return ($key !== false) ? $key : null;
     }
 
@@ -490,7 +507,7 @@ class Property implements PropertyInterface
      */
     public function getTypeText(): string
     {       
-        return $this->typeNames[$this->getType()] ?? 'unknow';
+        return Self::TYPES[$this->getType()] ?? 'unknow';
     }
 
     /**
