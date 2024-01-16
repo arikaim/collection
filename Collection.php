@@ -416,7 +416,7 @@ class Collection implements CollectionInterface, Countable, ArrayAccess, Iterato
      */
     public function isEmpty(string $key): bool
     {
-        return (isset($this->data[$key]) == false) ? true : empty($this->data[$key]);      
+        return empty($this->data[$key] ?? null);      
     }
 
     /**
