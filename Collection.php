@@ -12,14 +12,12 @@ namespace Arikaim\Core\Collection;
 use Arikaim\Core\Collection\Interfaces\CollectionInterface;
 use Arikaim\Core\Collection\Arrays;
 use Traversable;
-use Countable;
-use ArrayAccess;
 use IteratorAggregate;
 
 /**
  * Collection base class
  */
-class Collection implements CollectionInterface, Countable, ArrayAccess, IteratorAggregate
+class Collection implements CollectionInterface, \Countable, \ArrayAccess, IteratorAggregate
 {
     /**
      * Collection items data
@@ -459,13 +457,13 @@ class Collection implements CollectionInterface, Countable, ArrayAccess, Iterato
      *
      * @param string $key
      * @param string|null $default
-     * @return string|null
+     * @return string
      */
-    public function getString(string $key, ?string $default = null): ?string
+    public function getString(string $key, ?string $default = null): string
     {
-        $value = $this->get($key,$default ?? '');
+        $value = $this->data[$key] ?? $default ?? '';
     
-        return (\trim($value) == '') ? $default : (string)$value;
+        return (\trim($value) == '') ? ($default ?? '') : (string)$value;
     }
 
     /**
