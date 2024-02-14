@@ -403,7 +403,7 @@ class Collection implements CollectionInterface, \Countable, \ArrayAccess, Itera
      */
     public function toArray(): array
     {
-        return \is_array($this->data) ? $this->data : [];
+        return $this->data;
     }
 
     /**
