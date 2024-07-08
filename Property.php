@@ -40,7 +40,8 @@ class Property implements PropertyInterface
         'file',
         'date',
         'time',
-        'time-interval'
+        'time-interval',
+        'object'
     ];
 
     /**

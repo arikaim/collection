@@ -56,7 +56,7 @@ abstract class AbstractDescriptor
      * @param array|object|string|Callable $descriptor
      * @return Properties
      */
-    protected function property(string $name, $descriptor)
+    public function property(string $name, $descriptor)
     {
         return $this->properties->property($name,$descriptor);
     }
@@ -67,7 +67,7 @@ abstract class AbstractDescriptor
      * @param string $name
      * @return Properties
      */
-    protected function createCollection(string $name): Properties
+    public function createCollection(string $name): Properties
     {
         $this->collections[$name] = new Properties();
 
