@@ -143,6 +143,13 @@ class Property implements PropertyInterface
     protected $displayType = null;
 
     /**
+     * Relation descriptor
+     *
+     * @var string|null
+     */
+    protected $relation = null;
+
+    /**
      * Constructor
      *
      * @param string $name  
@@ -154,6 +161,27 @@ class Property implements PropertyInterface
         if (\is_array($data) == true) {
             $this->applyData($data);
         }
+    }
+
+    /**
+     * Get relation descriptor
+     *
+     * @return string|null
+     */
+    public function getRelation(): ?string
+    {
+        return $this->relation;
+    }
+
+    /**
+     * Set relation descriptor
+     *
+     * @param string|null $relation
+     * @return void
+     */
+    public function relation(?string $relation): void
+    {
+        $this->relation = $relation;
     }
 
     /**
@@ -542,6 +570,7 @@ class Property implements PropertyInterface
             'items'        => $this->getItems(),
             'display_type' => $this->displayType,
             'group'        => $this->group,
+            'relation'     => $this->relation,
             'help'         => $this->help
         ];
     }

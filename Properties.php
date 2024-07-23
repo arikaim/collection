@@ -13,6 +13,7 @@ use Arikaim\Core\Collection\Collection;
 use Arikaim\Core\Collection\Property;
 use Arikaim\Core\Collection\Interfaces\PropertyInterface;
 use Arikaim\Core\Collection\Interfaces\CollectionInterface;
+use Closure;
 
 /**
  * Properties collection
@@ -245,9 +246,10 @@ class Properties extends Collection implements CollectionInterface
     /**
      * Get values
      *
+     * @param Closure|null $resolveRelation  Resolve relation value using relation descriptor
      * @return array
      */
-    public function getValues(): array
+    public function getValues(?Closure $resolveRelation = null): array
     {
         $result = [];
       
@@ -259,16 +261,28 @@ class Properties extends Collection implements CollectionInterface
 
             if ($type == PropertyInterface::GROUP) {
                 foreach ($property as $name => $item) {
+                    $relation = $item['relation'] ?? null;
                     if ($name == 'items' || \is_array($item) == false) {
                         continue;
                     }
                     $default = $item['default'] ?? null;
+                    if (empty($relation) == false && \is_callable($resolveRelation) == true) {
+                        $item['value'] = $resolveRelation($relation);
+                    } 
+
                     $value = (empty($item['value']) == true) ? $default : $item['value'];
                     $result[$name] = $value;
                 }
             }
-            $propertyValue = $property['value'] ?? null;
+            $relation = $property['relation'] ?? null;
             $default = $property['default'] ?? null;
+
+            if (empty($relation) == false && \is_callable($resolveRelation) == true) {
+                $propertyValue = $resolveRelation($relation);
+            } else {
+                $propertyValue = $property['value'] ?? null;
+            }
+
             $value = (empty($propertyValue) == true) ? $default : $propertyValue;
             
             $result[$key] = $value;         

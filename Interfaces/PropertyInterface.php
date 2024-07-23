@@ -35,6 +35,21 @@ interface PropertyInterface
     const TIME_INTERVAL     = 18;
 
     /**
+     * Set relation descriptor
+     *
+     * @param string|null $relation
+     * @return void
+     */
+    public function relation(?string $relation): void;
+
+    /**
+     * Get relation descriptor
+     *
+     * @return string|null
+     */
+    public function getRelation(): ?string;
+    
+    /**
      * Get property name.
      *
      * @return string
