@@ -158,7 +158,7 @@ class Property implements PropertyInterface
     public function __construct(string $name, ?array $data = null) 
     {
         $this->name = $name;    
-        if (\is_array($data) == true) {
+        if ($data !== null) {
             $this->applyData($data);
         }
     }
@@ -583,8 +583,13 @@ class Property implements PropertyInterface
      */
     public function applyData(array $data)
     {
-        foreach($data as $key => $value) {
-            $this->{$key} = $value;
+        $data['displayType'] = $data['display_type'] ?? null;
+        $vars = \get_object_vars($this);
+
+        foreach($vars as $key => $value) {
+            if (isset($data[$key]) == true) {
+                $this->{$key} = $data[$key];
+            }
         }
     }
 
